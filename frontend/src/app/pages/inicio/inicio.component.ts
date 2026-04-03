@@ -6,7 +6,6 @@ import { EstudioService } from '../../services/estudio.service';
   selector: 'app-inicio',
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.scss'],
-  host: { style: 'display: flex; flex: 1;' },
 })
 export class InicioComponent {
   constructor(

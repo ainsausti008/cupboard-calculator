@@ -5,16 +5,7 @@
 }
 
 .app-body {
-  display: flex;
   flex: 1;
+  display: flex;
   overflow: hidden;
-
-  > router-outlet {
-    display: none;
-  }
-
-  > *:not(router-outlet) {
-    flex: 1;
-    display: flex;
-  }
 }
