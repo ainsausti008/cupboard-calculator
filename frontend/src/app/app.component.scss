@@ -8,11 +8,13 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-}
 
-.app-content {
-  flex: 1;
-  padding: 1.5rem;
-  overflow-y: auto;
-  background-color: #f5f5f5;
+  > router-outlet {
+    display: none;
+  }
+
+  > *:not(router-outlet) {
+    flex: 1;
+    display: flex;
+  }
 }

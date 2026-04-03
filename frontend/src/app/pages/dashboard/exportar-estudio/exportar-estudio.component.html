@@ -1,0 +1,12 @@
+<div class="exportar-estudio">
+  <h2>Exportar estudio</h2>
+  <p>Descarga el estudio actual como archivo JSON para poder cargarlo más adelante.</p>
+
+  <button class="btn btn-primary" (click)="exportar()">
+    Descargar JSON
+  </button>
+
+  <p *ngIf="exportado" class="mensaje-exito">
+    ✓ Estudio exportado correctamente
+  </p>
+</div>

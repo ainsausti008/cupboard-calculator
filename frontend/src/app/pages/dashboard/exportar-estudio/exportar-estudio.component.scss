@@ -1,0 +1,38 @@
+.exportar-estudio {
+  max-width: 600px;
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.btn {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-primary {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+
+  &:hover {
+    background-color: #34495e;
+  }
+}
+
+.mensaje-exito {
+  color: #27ae60 !important;
+  font-weight: 600;
+  margin-top: 1rem;
+}
