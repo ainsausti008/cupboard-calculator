@@ -1,5 +1,5 @@
 <div class="parametros-globales">
-  <h2>Parámetros globales</h2>
+  <h1>Parámetros globales</h1>
 
   <div class="form-group">
     <label for="titulo">Título del estudio</label>
@@ -21,7 +21,7 @@
     ></textarea>
   </div>
 
-  <h3>Dimensiones del espacio</h3>
+  <h2>Características del espacio</h2>
 
   <div class="form-row">
     <div class="form-group">
@@ -52,9 +52,7 @@
     </div>
   </div>
 
-  <h3>Características del espacio</h3>
-
-  <div class="form-checks">
+    <div class="form-checks">
     <div class="form-check-row">
       <span class="check-label">
         Pared en la esquina izquierda
@@ -78,7 +76,9 @@
     </div>
   </div>
 
-  <h3>Constantes</h3>
+  <h2>Constantes</h2>
+
+  <h3> Constantes de espacio de la estructura</h3>
 
   <div class="form-row">
     <div class="form-group">
@@ -122,6 +122,8 @@
     </div>
   </div>
 
+  <h3>Constantes de las tablas</h3>
+
   <div class="form-row">
     <div class="form-group">
       <label for="grosorTabla">Grosor tabla (mm)</label>
@@ -140,6 +142,50 @@
         type="number"
         [(ngModel)]="estudio.constantes.grosorTablaTrasera"
         placeholder="10"
+      />
+    </div>
+  </div>
+
+  <h3>Constantes de las puertas</h3>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="holguraPuertaEsquina">Holgura puertas con esquinas (mm)</label>
+      <input
+        id="holguraPuertaEsquina"
+        type="number"
+        [(ngModel)]="estudio.constantes.holguraPuertaEsquina"
+        placeholder="3"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="holguraPuertaModulo">Holgura puertas entre módulos (mm)</label>
+      <input
+        id="holguraPuertaModulo"
+        type="number"
+        [(ngModel)]="estudio.constantes.holguraPuertaModulo"
+        placeholder="3"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="anchuraMaximaPuerta">Anchura máxima de puerta (mm)</label>
+      <input
+        id="anchuraMaximaPuerta"
+        type="number"
+        [(ngModel)]="estudio.constantes.anchuraMaximaPuerta"
+        placeholder="530"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="anchuraMinimaPuerta">Anchura mínima de puerta (mm)</label>
+      <input
+        id="anchuraMinimaPuerta"
+        type="number"
+        [(ngModel)]="estudio.constantes.anchuraMinimaPuerta"
+        placeholder="265"
       />
     </div>
   </div>
