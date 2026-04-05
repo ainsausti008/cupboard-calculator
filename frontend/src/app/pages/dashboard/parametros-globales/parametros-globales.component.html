@@ -11,36 +11,135 @@
     />
   </div>
 
-  <h3>Dimensiones (mm)</h3>
+  <div class="form-group">
+    <label for="descripcion">Descripción del estudio</label>
+    <textarea
+      id="descripcion"
+      [(ngModel)]="estudio.descripcion"
+      placeholder="Descripción opcional del estudio"
+      rows="3"
+    ></textarea>
+  </div>
+
+  <h3>Dimensiones del espacio</h3>
 
   <div class="form-row">
     <div class="form-group">
-      <label for="altura">Altura</label>
+      <label for="altura">Altura (mm)</label>
       <input
         id="altura"
         type="number"
         [(ngModel)]="estudio.dimensiones.altura"
-        placeholder="0"
       />
     </div>
 
     <div class="form-group">
-      <label for="anchura">Anchura</label>
+      <label for="anchura">Anchura (mm)</label>
       <input
         id="anchura"
         type="number"
         [(ngModel)]="estudio.dimensiones.anchura"
-        placeholder="0"
       />
     </div>
 
     <div class="form-group">
-      <label for="profundidad">Profundidad</label>
+      <label for="profundidad">Profundidad (mm)</label>
       <input
         id="profundidad"
         type="number"
         [(ngModel)]="estudio.dimensiones.profundidad"
-        placeholder="0"
+      />
+    </div>
+  </div>
+
+  <h3>Características del espacio</h3>
+
+  <div class="form-checks">
+    <div class="form-check-row">
+      <span class="check-label">
+        Pared en la esquina izquierda
+        <span class="info-tooltip" title="Si se indica que sí, hay una pieza más y un remate menos">ℹ</span>
+      </span>
+      <div class="radio-group">
+        <label><input type="radio" name="paredIzq" [value]="true" [(ngModel)]="estudio.caracteristicas.paredEsquinaIzquierda" /> Sí</label>
+        <label><input type="radio" name="paredIzq" [value]="false" [(ngModel)]="estudio.caracteristicas.paredEsquinaIzquierda" /> No</label>
+      </div>
+    </div>
+
+    <div class="form-check-row">
+      <span class="check-label">
+        Pared en la esquina derecha
+        <span class="info-tooltip" title="Si se indica que sí, hay una pieza más y un remate menos">ℹ</span>
+      </span>
+      <div class="radio-group">
+        <label><input type="radio" name="paredDer" [value]="true" [(ngModel)]="estudio.caracteristicas.paredEsquinaDerecha" /> Sí</label>
+        <label><input type="radio" name="paredDer" [value]="false" [(ngModel)]="estudio.caracteristicas.paredEsquinaDerecha" /> No</label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Constantes</h3>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="distanciaTecho">Distancia al techo (mm)</label>
+      <input
+        id="distanciaTecho"
+        type="number"
+        [(ngModel)]="estudio.constantes.distanciaTecho"
+        placeholder="50"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="distanciaSuelo">Distancia al suelo (mm)</label>
+      <input
+        id="distanciaSuelo"
+        type="number"
+        [(ngModel)]="estudio.constantes.distanciaSuelo"
+        placeholder="64"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="distanciaFondo">Distancia al fondo (mm)</label>
+      <input
+        id="distanciaFondo"
+        type="number"
+        [(ngModel)]="estudio.constantes.distanciaFondo"
+        placeholder="70"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="distanciaEsquina">Distancia a la esquina (mm)</label>
+      <input
+        id="distanciaEsquina"
+        type="number"
+        [(ngModel)]="estudio.constantes.distanciaEsquina"
+        placeholder="40"
+      />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="grosorTabla">Grosor tabla (mm)</label>
+      <input
+        id="grosorTabla"
+        type="number"
+        [(ngModel)]="estudio.constantes.grosorTabla"
+        placeholder="19"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="grosorTablaTrasera">Grosor tabla trasera (mm)</label>
+      <input
+        id="grosorTablaTrasera"
+        type="number"
+        [(ngModel)]="estudio.constantes.grosorTablaTrasera"
+        placeholder="10"
       />
     </div>
   </div>
