@@ -1,0 +1,49 @@
+.parametros-globales {
+  max-width: 700px;
+
+  h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    color: #34495e;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+
+  label {
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 0.35rem;
+    font-size: 0.9rem;
+  }
+
+  input {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #2c3e50;
+    }
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+
+  .form-group {
+    flex: 1;
+  }
+}
