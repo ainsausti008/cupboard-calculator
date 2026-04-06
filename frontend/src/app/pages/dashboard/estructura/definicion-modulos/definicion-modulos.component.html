@@ -33,6 +33,20 @@
         </small>
       </li>
     </ul>
+    <h4>Módulos en horizontal</h4>
+    <p *ngIf="cargandoOpciones" class="loading">Calculando opciones…</p>
+    <div *ngIf="!cargandoOpciones && !error && opcionesModulos.length > 0" class="form-group">
+      <label for="opcionModulo">Selecciona una configuración:</label>
+      <select id="opcionModulo" (change)="seleccionarOpcion($any($event.target).selectedIndex - 1)">
+        <option value="" disabled [selected]="!opcionSeleccionada">-- Elige una opción --</option>
+        <option *ngFor="let opcion of opcionesModulos">
+          {{ opcion.modulos }} módulo{{ opcion.modulos > 1 ? 's' : '' }} con {{ opcion.puertas }} puertas — anchura puerta: {{ opcion.anchura_puerta }} mm
+        </option>
+      </select>
+    </div>
+    <p *ngIf="!cargandoOpciones && !error && opcionesModulos.length === 0 && !cargando" class="warning">
+      No hay opciones válidas de módulos para las dimensiones actuales.
+    </p>
     <p *ngIf="cargando" class="loading">Calculando dimensiones…</p>
     <p *ngIf="error" class="error">{{ error }}</p>
   <div class="nav-acciones">

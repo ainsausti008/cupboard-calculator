@@ -23,3 +23,32 @@ class DimensionesEstructuraResponse(BaseModel):
     anchura_estructura: float
     altura_estructura: float
     profundidad_estructura: float
+
+
+# ---------------------------------------------------------------------------
+# Opciones de módulos horizontales
+# ---------------------------------------------------------------------------
+
+
+class OpcionesModulosRequest(BaseModel):
+    """Datos de entrada para calcular las opciones de módulos horizontales."""
+
+    anchura_estructura: float
+    holgura_puerta_esquina: float
+    holgura_puerta_contigua: float
+    anchura_minima_puerta: float
+    anchura_maxima_puerta: float
+
+
+class OpcionModulo(BaseModel):
+    """Una opción válida de configuración de módulos."""
+
+    modulos: int
+    puertas: int
+    anchura_puerta: float
+
+
+class OpcionesModulosResponse(BaseModel):
+    """Resultado del cálculo de opciones de módulos horizontales."""
+
+    opciones: list[OpcionModulo]

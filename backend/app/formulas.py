@@ -43,3 +43,67 @@ def calcular_profundidad_estructura(
     Se descuenta la distancia al fondo.
     """
     return profundidad_espacio - distancia_fondo
+
+
+# ---------------------------------------------------------------------------
+# Módulos horizontales
+# ---------------------------------------------------------------------------
+
+
+def calcular_anchura_puerta(
+    anchura_estructura: float,
+    holgura_puerta_esquina: float,
+    holgura_puerta_contigua: float,
+    cantidad_puertas: int,
+) -> float:
+    """Calcula la anchura de cada puerta (todas iguales).
+
+    anchura_puerta = (anchura_estructura
+                      - 2 * holgura_puerta_esquina
+                      - (cantidad_puertas - 1) * holgura_puerta_contigua)
+                     / cantidad_puertas
+    """
+    espacio_util = (
+        anchura_estructura
+        - 2 * holgura_puerta_esquina
+        - (cantidad_puertas - 1) * holgura_puerta_contigua
+    )
+    return espacio_util / cantidad_puertas
+
+
+# Catálogo fijo de opciones: (módulos, puertas)
+OPCIONES_MODULOS = [
+    (1, 2),
+    (2, 3),
+    (2, 4),
+]
+
+
+def calcular_opciones_modulos(
+    anchura_estructura: float,
+    holgura_puerta_esquina: float,
+    holgura_puerta_contigua: float,
+    anchura_minima_puerta: float,
+    anchura_maxima_puerta: float,
+) -> list[dict]:
+    """Devuelve las opciones de módulos horizontales cuya anchura de puerta
+    está dentro de los límites permitidos."""
+    opciones: list[dict] = []
+
+    for modulos, puertas in OPCIONES_MODULOS:
+        anchura = calcular_anchura_puerta(
+            anchura_estructura=anchura_estructura,
+            holgura_puerta_esquina=holgura_puerta_esquina,
+            holgura_puerta_contigua=holgura_puerta_contigua,
+            cantidad_puertas=puertas,
+        )
+        if anchura_minima_puerta <= anchura <= anchura_maxima_puerta:
+            opciones.append(
+                {
+                    "modulos": modulos,
+                    "puertas": puertas,
+                    "anchura_puerta": round(anchura, 2),
+                }
+            )
+
+    return opciones

@@ -5,8 +5,14 @@ from .formulas import (
     calcular_anchura_estructura,
     calcular_altura_estructura,
     calcular_profundidad_estructura,
+    calcular_opciones_modulos,
 )
-from .schemas import DimensionesEstructuraRequest, DimensionesEstructuraResponse
+from .schemas import (
+    DimensionesEstructuraRequest,
+    DimensionesEstructuraResponse,
+    OpcionesModulosRequest,
+    OpcionesModulosResponse,
+)
 
 app = FastAPI(title="Cupboard Calculator API", version="0.1.0")
 
@@ -49,3 +55,21 @@ async def calcular_dimensiones_estructura(
             distancia_fondo=datos.distancia_fondo,
         ),
     )
+
+
+@app.post(
+    "/api/calcular-opciones-modulos",
+    response_model=OpcionesModulosResponse,
+)
+async def calcular_opciones_modulos_endpoint(
+    datos: OpcionesModulosRequest,
+) -> OpcionesModulosResponse:
+    """Devuelve las opciones válidas de módulos horizontales."""
+    opciones = calcular_opciones_modulos(
+        anchura_estructura=datos.anchura_estructura,
+        holgura_puerta_esquina=datos.holgura_puerta_esquina,
+        holgura_puerta_contigua=datos.holgura_puerta_contigua,
+        anchura_minima_puerta=datos.anchura_minima_puerta,
+        anchura_maxima_puerta=datos.anchura_maxima_puerta,
+    )
+    return OpcionesModulosResponse(opciones=opciones)

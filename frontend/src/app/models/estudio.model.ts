@@ -21,7 +21,7 @@ export interface EstudioData {
     grosorTabla: number;
     grosorTablaTrasera: number;
     holguraPuertaEsquina: number;
-    holguraPuertaModulo: number;
+    holguraPuertaContigua: number;
     anchuraMaximaPuerta: number;
     anchuraMinimaPuerta: number;
   };
@@ -51,7 +51,7 @@ export function crearEstudioVacio(): EstudioData {
       grosorTabla: 19,
       grosorTablaTrasera: 10,
       holguraPuertaEsquina: 3,
-      holguraPuertaModulo: 3,
+      holguraPuertaContigua: 3,
       anchuraMaximaPuerta: 530,
       anchuraMinimaPuerta: 265,
     },

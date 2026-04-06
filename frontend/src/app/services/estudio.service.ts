@@ -1,12 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, map } from 'rxjs';
 import { EstudioData, crearEstudioVacio } from '../models/estudio.model';
 
 interface DimensionesEstructuraResponse {
   anchura_estructura: number;
   altura_estructura: number;
   profundidad_estructura: number;
+}
+
+export interface OpcionModulo {
+  modulos: number;
+  puertas: number;
+  anchura_puerta: number;
+}
+
+interface OpcionesModulosResponse {
+  opciones: OpcionModulo[];
 }
 
 @Injectable({
@@ -59,6 +69,27 @@ export class EstudioService {
           this.estudio.dimensiones.altura_estructura = res.altura_estructura;
           this.estudio.dimensiones.profundidad_estructura = res.profundidad_estructura;
         })
+      );
+  }
+
+  calcularOpcionesModulos(): Observable<OpcionModulo[]> {
+    const body = {
+      anchura_estructura: this.estudio.dimensiones.anchura_estructura,
+      holgura_puerta_esquina: this.estudio.constantes.holguraPuertaEsquina,
+      holgura_puerta_contigua: this.estudio.constantes.holguraPuertaContigua,
+      anchura_minima_puerta: this.estudio.constantes.anchuraMinimaPuerta,
+      anchura_maxima_puerta: this.estudio.constantes.anchuraMaximaPuerta,
+    };
+
+    return this.http
+      .post<OpcionesModulosResponse>(
+        `${this.apiUrl}/calcular-opciones-modulos`,
+        body
+      )
+      .pipe(
+        tap((res) => res.opciones),
+        // Extraer solo el array de opciones
+        map((res) => res.opciones)
       );
   }
 }

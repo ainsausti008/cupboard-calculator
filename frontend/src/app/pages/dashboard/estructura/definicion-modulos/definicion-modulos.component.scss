@@ -14,6 +14,44 @@
     color: #7f8c8d;
     margin-left: 0.3em;
   }
+
+  .form-group {
+    margin-top: 1rem;
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #2c3e50;
+    }
+
+    select {
+      width: 100%;
+      max-width: 500px;
+      padding: 0.5rem 0.7rem;
+      font-size: 0.95rem;
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      background-color: #fff;
+      color: #2c3e50;
+    }
+  }
+
+  .warning {
+    color: #e67e22;
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
+
+  .loading {
+    color: #7f8c8d;
+    font-style: italic;
+  }
+
+  .error {
+    color: #e74c3c;
+    font-weight: 600;
+  }
 }
 
 .nav-acciones {
