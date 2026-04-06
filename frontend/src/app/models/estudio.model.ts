@@ -5,6 +5,9 @@ export interface EstudioData {
     altura: number;
     anchura: number;
     profundidad: number;
+    anchura_estructura: number;
+    altura_estructura: number;
+    profundidad_estructura: number;
   };
   caracteristicas: {
     paredEsquinaIzquierda: boolean;
@@ -32,6 +35,9 @@ export function crearEstudioVacio(): EstudioData {
       altura: 0,
       anchura: 0,
       profundidad: 0,
+      anchura_estructura: 0,
+      altura_estructura: 0,
+      profundidad_estructura: 0,
     },
     caracteristicas: {
       paredEsquinaIzquierda: false,

@@ -1,7 +1,40 @@
 <div class="definicion-modulos">
   <h3>Definición de módulos</h3>
-  <p class="placeholder">Contenido pendiente.</p>
+  <p class="placeholder">A continuación, se debe elegir una de las opciones disponibles para
+    definir los módulos del armario. Las opciones se calculan en función de la anchura, 
+    altura y profundidad de la estructura, que han sido calculadas a partir de los parámetros 
+    globales.
 
+    Para dar las opciones disponibles, se parte de los siguientes parámetros de la estructura
+    del armario:
+    <ul *ngIf="!cargando && !error">
+      <li>
+        Anchura estructura: {{ estudio.dimensiones.anchura_estructura }} mm
+        <small class="nota-formula" *ngIf="estudio.caracteristicas.paredEsquinaIzquierda && estudio.caracteristicas.paredEsquinaDerecha">
+          ({{ estudio.dimensiones.anchura }} − 2 × {{ estudio.constantes.distanciaEsquina }})
+        </small>
+        <small class="nota-formula" *ngIf="estudio.caracteristicas.paredEsquinaIzquierda !== estudio.caracteristicas.paredEsquinaDerecha">
+          ({{ estudio.dimensiones.anchura }} − {{ estudio.constantes.distanciaEsquina }})
+        </small>
+        <small class="nota-formula" *ngIf="!estudio.caracteristicas.paredEsquinaIzquierda && !estudio.caracteristicas.paredEsquinaDerecha">
+          ({{ estudio.dimensiones.anchura }})
+        </small>
+      </li>
+      <li>
+        Altura estructura: {{ estudio.dimensiones.altura_estructura }} mm
+        <small class="nota-formula">
+          ({{ estudio.dimensiones.altura }} − {{ estudio.constantes.distanciaTecho }} − {{ estudio.constantes.distanciaSuelo }})
+        </small>
+      </li>
+      <li>
+        Profundidad estructura: {{ estudio.dimensiones.profundidad_estructura }} mm
+        <small class="nota-formula">
+          ({{ estudio.dimensiones.profundidad }} − {{ estudio.constantes.distanciaFondo }})
+        </small>
+      </li>
+    </ul>
+    <p *ngIf="cargando" class="loading">Calculando dimensiones…</p>
+    <p *ngIf="error" class="error">{{ error }}</p>
   <div class="nav-acciones">
     <button class="btn btn-primary" routerLink="../baldas">
       Siguiente: Definición de baldas →
