@@ -74,6 +74,7 @@ export class DefinicionModulosComponent implements OnInit {
         this.modulosVerticalesSeleccionados = res.sugerencia;
         this.alturaModulo1 = Math.round(this.estudio.dimensiones.altura_estructura / 2);
         this.cargandoVerticales = false;
+        this.restaurarDesdeEstudio();
       },
       error: (err) => {
         this.cargandoVerticales = false;
@@ -85,6 +86,7 @@ export class DefinicionModulosComponent implements OnInit {
 
   invalidarResumen(): void {
     this.modulosDefinidos = [];
+    this.estudio.definicionModulos.modulos = [];
   }
 
   seleccionarOpcion(index: number): void {
@@ -118,6 +120,7 @@ export class DefinicionModulosComponent implements OnInit {
         next: (modulos) => {
           this.modulosDefinidos = modulos;
           this.cargandoResumen = false;
+          this.guardarEnEstudio();
         },
         error: (err) => {
           this.cargandoResumen = false;
@@ -125,5 +128,46 @@ export class DefinicionModulosComponent implements OnInit {
           console.error(err);
         },
       });
+  }
+
+  /** Persiste las selecciones y los módulos calculados en el modelo del estudio */
+  private guardarEnEstudio(): void {
+    const def = this.estudio.definicionModulos;
+    def.opcionHorizontalIndex = this.opcionSeleccionada
+      ? this.opcionesModulos.indexOf(this.opcionSeleccionada)
+      : -1;
+    def.modulosVerticales = +this.modulosVerticalesSeleccionados;
+    def.alturaModulo1 = +this.modulosVerticalesSeleccionados === 2
+      ? this.alturaModulo1
+      : null;
+    def.anchuraEstructura = this.estudio.dimensiones.anchura_estructura;
+    def.alturaEstructura = this.estudio.dimensiones.altura_estructura;
+    def.profundidadEstructura = this.estudio.dimensiones.profundidad_estructura;
+    def.modulos = this.modulosDefinidos.map((m) => ({
+      nombre: m.nombre,
+      anchura: m.anchura,
+      altura: m.altura,
+      profundidad: m.profundidad,
+    }));
+  }
+
+  /** Restaura el estado del componente a partir de datos guardados en el estudio */
+  private restaurarDesdeEstudio(): void {
+    const def = this.estudio.definicionModulos;
+    if (def.modulos.length === 0 || def.opcionHorizontalIndex < 0) {
+      return; // No hay datos guardados, flujo normal
+    }
+
+    // Restaurar selección horizontal
+    if (def.opcionHorizontalIndex < this.opcionesModulos.length) {
+      this.opcionSeleccionada = this.opcionesModulos[def.opcionHorizontalIndex];
+    }
+
+    // Restaurar selección vertical
+    this.modulosVerticalesSeleccionados = def.modulosVerticales;
+    this.alturaModulo1 = def.alturaModulo1;
+
+    // Restaurar módulos calculados
+    this.modulosDefinidos = def.modulos;
   }
 }
