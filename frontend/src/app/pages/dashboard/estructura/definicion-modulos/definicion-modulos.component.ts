@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EstudioData } from '../../../../models/estudio.model';
-import { EstudioService, OpcionModulo } from '../../../../services/estudio.service';
+import { EstudioService, OpcionModulo, ModuloDefinido } from '../../../../services/estudio.service';
 
 @Component({
   selector: 'app-definicion-modulos',
@@ -15,6 +15,14 @@ export class DefinicionModulosComponent implements OnInit {
   opcionesModulos: OpcionModulo[] = [];
   opcionSeleccionada: OpcionModulo | null = null;
   cargandoOpciones = false;
+
+  modulosVerticales: number[] = [1, 2];
+  modulosVerticalesSeleccionados = 1;
+  cargandoVerticales = false;
+  alturaModulo1: number | null = null;
+
+  modulosDefinidos: ModuloDefinido[] = [];
+  cargandoResumen = false;
 
   constructor(private estudioService: EstudioService) {}
 
@@ -47,6 +55,7 @@ export class DefinicionModulosComponent implements OnInit {
       next: (opciones) => {
         this.opcionesModulos = opciones;
         this.cargandoOpciones = false;
+        this.cargarModulosVerticales();
       },
       error: (err) => {
         this.cargandoOpciones = false;
@@ -56,7 +65,65 @@ export class DefinicionModulosComponent implements OnInit {
     });
   }
 
+  cargarModulosVerticales(): void {
+    this.cargandoVerticales = true;
+
+    this.estudioService.sugerirModulosVerticales().subscribe({
+      next: (res) => {
+        this.modulosVerticales = res.opciones;
+        this.modulosVerticalesSeleccionados = res.sugerencia;
+        this.alturaModulo1 = Math.round(this.estudio.dimensiones.altura_estructura / 2);
+        this.cargandoVerticales = false;
+      },
+      error: (err) => {
+        this.cargandoVerticales = false;
+        this.error = 'Error al calcular los módulos verticales.';
+        console.error(err);
+      },
+    });
+  }
+
+  invalidarResumen(): void {
+    this.modulosDefinidos = [];
+  }
+
   seleccionarOpcion(index: number): void {
     this.opcionSeleccionada = index >= 0 ? this.opcionesModulos[index] : null;
+    this.invalidarResumen();
+  }
+
+  onCambioVertical(): void {
+    this.invalidarResumen();
+  }
+
+  onCambioAlturaModulo1(): void {
+    this.invalidarResumen();
+  }
+
+  calcularResumen(): void {
+    if (!this.opcionSeleccionada) {
+      return;
+    }
+
+    this.cargandoResumen = true;
+    this.error = null;
+
+    this.estudioService
+      .calcularModulosDefinidos(
+        this.opcionSeleccionada,
+        +this.modulosVerticalesSeleccionados,
+        +this.modulosVerticalesSeleccionados === 2 ? (this.alturaModulo1 ?? undefined) : undefined
+      )
+      .subscribe({
+        next: (modulos) => {
+          this.modulosDefinidos = modulos;
+          this.cargandoResumen = false;
+        },
+        error: (err) => {
+          this.cargandoResumen = false;
+          this.error = 'Error al calcular los módulos definidos.';
+          console.error(err);
+        },
+      });
   }
 }

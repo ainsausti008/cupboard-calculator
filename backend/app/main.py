@@ -6,12 +6,18 @@ from .formulas import (
     calcular_altura_estructura,
     calcular_profundidad_estructura,
     calcular_opciones_modulos,
+    sugerir_modulos_verticales,
+    calcular_modulos_definidos,
 )
 from .schemas import (
     DimensionesEstructuraRequest,
     DimensionesEstructuraResponse,
     OpcionesModulosRequest,
     OpcionesModulosResponse,
+    ModulosVerticalesRequest,
+    ModulosVerticalesResponse,
+    ModulosDefinidosRequest,
+    ModulosDefinidosResponse,
 )
 
 app = FastAPI(title="Cupboard Calculator API", version="0.1.0")
@@ -73,3 +79,40 @@ async def calcular_opciones_modulos_endpoint(
         anchura_maxima_puerta=datos.anchura_maxima_puerta,
     )
     return OpcionesModulosResponse(opciones=opciones)
+
+
+@app.post(
+    "/api/sugerir-modulos-verticales",
+    response_model=ModulosVerticalesResponse,
+)
+async def sugerir_modulos_verticales_endpoint(
+    datos: ModulosVerticalesRequest,
+) -> ModulosVerticalesResponse:
+    """Sugiere la cantidad de módulos en vertical según la altura de la estructura."""
+    return ModulosVerticalesResponse(
+        sugerencia=sugerir_modulos_verticales(datos.altura_estructura),
+        opciones=[1, 2],
+    )
+
+
+@app.post(
+    "/api/calcular-modulos-definidos",
+    response_model=ModulosDefinidosResponse,
+)
+async def calcular_modulos_definidos_endpoint(
+    datos: ModulosDefinidosRequest,
+) -> ModulosDefinidosResponse:
+    """Calcula las dimensiones de cada módulo según la selección realizada."""
+    modulos = calcular_modulos_definidos(
+        modulos_horizontales=datos.modulos_horizontales,
+        puertas=datos.puertas,
+        modulos_verticales=datos.modulos_verticales,
+        anchura_estructura=datos.anchura_estructura,
+        altura_estructura=datos.altura_estructura,
+        profundidad_estructura=datos.profundidad_estructura,
+        anchura_puerta=datos.anchura_puerta,
+        holgura_puerta_esquina=datos.holgura_puerta_esquina,
+        holgura_puerta_contigua=datos.holgura_puerta_contigua,
+        altura_modulo1=datos.altura_modulo1,
+    )
+    return ModulosDefinidosResponse(modulos=modulos)

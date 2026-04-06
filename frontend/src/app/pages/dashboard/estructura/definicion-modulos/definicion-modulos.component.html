@@ -43,15 +43,83 @@
           {{ opcion.modulos }} módulo{{ opcion.modulos > 1 ? 's' : '' }} con {{ opcion.puertas }} puertas — anchura puerta: {{ opcion.anchura_puerta }} mm
         </option>
       </select>
+      <small *ngIf="opcionSeleccionada" class="nota-formula nota-formula-block">
+        ({{ estudio.dimensiones.anchura_estructura }} − 2 × {{ estudio.constantes.holguraPuertaEsquina }} − ({{ opcionSeleccionada.puertas }} − 1) × {{ estudio.constantes.holguraPuertaContigua }}) / {{ opcionSeleccionada.puertas }} = {{ opcionSeleccionada.anchura_puerta }} mm
+      </small>
     </div>
     <p *ngIf="!cargandoOpciones && !error && opcionesModulos.length === 0 && !cargando" class="warning">
       No hay opciones válidas de módulos para las dimensiones actuales.
     </p>
+    <h4>Módulos en vertical</h4>
+    <p *ngIf="cargandoVerticales" class="loading">Calculando sugerencia…</p>
+    <div *ngIf="!cargandoVerticales && !error" class="form-group">
+      <label for="modulosVerticales">Número de módulos en vertical:</label>
+      <select id="modulosVerticales" [(ngModel)]="modulosVerticalesSeleccionados" (ngModelChange)="onCambioVertical()">
+        <option *ngFor="let n of modulosVerticales" [value]="n">
+          {{ n }} módulo{{ n > 1 ? 's' : '' }}
+        </option>
+      </select>
+      <small class="nota-formula">Sugerencia basada en altura de estructura ({{ estudio.dimensiones.altura_estructura }} mm)</small>
+    </div>
+    <div *ngIf="!cargandoVerticales && !error && modulosVerticalesSeleccionados == 2" class="form-group">
+      <label for="alturaModulo1">Altura del módulo 1 — inferior (mm)</label>
+      <input
+        id="alturaModulo1"
+        type="number"
+        [(ngModel)]="alturaModulo1"
+        (ngModelChange)="onCambioAlturaModulo1()"
+        [min]="1"
+        [max]="estudio.dimensiones.altura_estructura - 1"
+      />
+      <small class="nota-formula nota-formula-block">
+        Módulo 2 — altura: {{ estudio.dimensiones.altura_estructura }} − {{ alturaModulo1 }} = {{ estudio.dimensiones.altura_estructura - (alturaModulo1 ?? 0) }} mm
+      </small>
+    </div>
+
+    <h4>Módulos definidos</h4>
+    <div *ngIf="opcionSeleccionada && !cargando" class="resumen-acciones">
+      <button class="btn btn-secondary" (click)="calcularResumen()" [disabled]="cargandoResumen">
+        {{ cargandoResumen ? 'Calculando…' : 'Calcular resumen' }}
+      </button>
+    </div>
+    <p *ngIf="!opcionSeleccionada && !cargando && !error" class="warning">
+      Selecciona primero una configuración horizontal y vertical para ver el resumen.
+    </p>
+    <div *ngIf="modulosDefinidos.length > 0" class="resumen-modulos">
+      <table>
+        <thead>
+          <tr>
+            <th>Módulo</th>
+            <th>Anchura (mm)</th>
+            <th>Altura (mm)</th>
+            <th>Profundidad (mm)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of modulosDefinidos">
+            <td class="nombre-modulo">{{ m.nombre }}</td>
+            <td>{{ m.anchura }}</td>
+            <td>{{ m.altura }}</td>
+            <td>{{ m.profundidad }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <p *ngIf="cargando" class="loading">Calculando dimensiones…</p>
     <p *ngIf="error" class="error">{{ error }}</p>
   <div class="nav-acciones">
-    <button class="btn btn-primary" routerLink="../baldas">
-      Siguiente: Definición de baldas →
-    </button>
+    <div class="contenedor-boton-recalculo">
+      <button
+        class="btn btn-primary"
+        routerLink="../baldas"
+        [disabled]="modulosDefinidos.length === 0"
+      >
+        Siguiente: Definición de baldas →
+      </button>
+      <div class="tooltip-aviso" *ngIf="modulosDefinidos.length === 0">
+        Es necesario calcular el resumen para poder acceder a la siguiente página.
+      </div>
+    </div>
   </div>
 </div>
