@@ -15,7 +15,7 @@ export class InicioComponent {
 
   nuevoEstudio(): void {
     this.estudioService.nuevoEstudio();
-    this.router.navigate(['/estudio', 'parametros']);
+    this.router.navigate(['/estudio', 'estructura']);
   }
 
   cargarEstudio(): void {
@@ -30,7 +30,7 @@ export class InicioComponent {
       reader.onload = () => {
         const contenido = reader.result as string;
         this.estudioService.cargarEstudio(contenido);
-        this.router.navigate(['/estudio', 'parametros']);
+        this.router.navigate(['/estudio', 'estructura']);
       };
       reader.readAsText(file);
     };

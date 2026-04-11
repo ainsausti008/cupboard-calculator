@@ -5,6 +5,20 @@ export interface ModuloEstudio {
   profundidad: number;
 }
 
+export interface SubmoduloBalda {
+  /** Número de baldas horizontales en este submódulo */
+  baldasHorizontales: number;
+}
+
+export interface BaldaModulo {
+  /** Nombre del módulo tal como fue definido (e.g. "1I", "2D") */
+  nombreModulo: string;
+  /** Número de baldas verticales (0 = sin divisiones verticales) */
+  baldasVerticales: number;
+  /** Submódulos creados por las baldas verticales (longitud = baldasVerticales + 1 si > 0, o 1 si = 0) */
+  submodulos: SubmoduloBalda[];
+}
+
 export interface EstudioData {
   titulo: string;
   descripcion: string;
@@ -46,6 +60,7 @@ export interface EstudioData {
     /** Módulos definidos con sus dimensiones */
     modulos: ModuloEstudio[];
   };
+  definicionBaldas: BaldaModulo[];
 }
 
 /** Estructura del JSON exportado/importado */
@@ -63,6 +78,7 @@ export interface EstudioExportado {
   };
   constantes: EstudioData['constantes'];
   definicionModulos: EstudioData['definicionModulos'];
+  definicionBaldas: BaldaModulo[];
 }
 
 export function crearEstudioVacio(): EstudioData {
@@ -102,6 +118,7 @@ export function crearEstudioVacio(): EstudioData {
       profundidadEstructura: 0,
       modulos: [],
     },
+    definicionBaldas: [],
   };
 }
 
@@ -121,6 +138,7 @@ export function aEstudioExportado(data: EstudioData): EstudioExportado {
     },
     constantes: { ...data.constantes },
     definicionModulos: { ...data.definicionModulos },
+    definicionBaldas: data.definicionBaldas.map(b => ({ ...b, submodulos: b.submodulos.map(s => ({ ...s })) })),
   };
 }
 
@@ -144,5 +162,6 @@ export function deEstudioExportado(json: EstudioExportado): EstudioData {
     },
     constantes: { ...json.constantes },
     definicionModulos: { ...json.definicionModulos },
+    definicionBaldas: (json.definicionBaldas || []).map(b => ({ ...b, submodulos: b.submodulos.map(s => ({ ...s })) })),
   };
 }
