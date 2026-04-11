@@ -11,7 +11,7 @@ export class DefinicionBaldasComponent implements OnInit {
   estudio!: EstudioData;
 
   /** Opciones disponibles para el desplegable de baldas verticales */
-  opcionesBaldasVerticales = [0, 1, 2];
+  opcionesBaldasVerticales = [0, 1];
 
   /** Opciones disponibles para el desplegable de baldas horizontales */
   opcionesBaldasHorizontales = [0, 1, 2, 3, 4];
@@ -28,32 +28,50 @@ export class DefinicionBaldasComponent implements OnInit {
     const modulosDefinidos = this.estudio.definicionModulos.modulos;
     const baldasExistentes = this.estudio.definicionBaldas;
 
-    // Crear o restaurar la estructura para cada módulo
     this.estudio.definicionBaldas = modulosDefinidos.map((modulo) => {
-      // Buscar si ya existe configuración guardada para este módulo
       const existente = baldasExistentes.find(
         (b) => b.nombreModulo === modulo.nombre
       );
       if (existente) {
         return existente;
       }
-      // Crear por defecto: 0 baldas verticales, 1 submódulo con 0 horizontales
       return {
         nombreModulo: modulo.nombre,
         baldasVerticales: 0,
+        posicionesVerticales: [],
         submodulos: [{ baldasHorizontales: 0 }],
       };
     });
   }
 
-  /** Al cambiar el número de baldas verticales de un módulo, regenerar submódulos */
+  /** Al cambiar el número de baldas verticales de un módulo, regenerar submódulos y posiciones */
   onCambioBaldasVerticales(baldaModulo: BaldaModulo): void {
-    const numSubmodulos =
-      baldaModulo.baldasVerticales > 0
-        ? baldaModulo.baldasVerticales + 1
-        : 1;
+    const numBaldas = baldaModulo.baldasVerticales;
+    const dims = this.dimensionesModulo(baldaModulo.nombreModulo);
+    const anchuraModulo = dims?.anchura ?? 0;
 
-    // Preservar valores existentes si es posible
+    if (numBaldas === 0) {
+      baldaModulo.posicionesVerticales = [];
+      baldaModulo.submodulos = [{ baldasHorizontales: 0 }];
+      return;
+    }
+
+    // Generar posiciones equidistantes por defecto
+    const antiguasPosiciones = baldaModulo.posicionesVerticales;
+    baldaModulo.posicionesVerticales = [];
+    for (let i = 0; i < numBaldas; i++) {
+      if (i < antiguasPosiciones.length) {
+        baldaModulo.posicionesVerticales.push(antiguasPosiciones[i]);
+      } else {
+        const posicion = Math.round(
+          ((i + 1) * anchuraModulo) / (numBaldas + 1)
+        );
+        baldaModulo.posicionesVerticales.push(posicion);
+      }
+    }
+
+    // Regenerar submódulos
+    const numSubmodulos = numBaldas + 1;
     const antiguos = baldaModulo.submodulos;
     baldaModulo.submodulos = [];
     for (let i = 0; i < numSubmodulos; i++) {
@@ -62,6 +80,10 @@ export class DefinicionBaldasComponent implements OnInit {
           i < antiguos.length ? antiguos[i].baldasHorizontales : 0,
       });
     }
+  }
+
+  trackByIndex(index: number): number {
+    return index;
   }
 
   /** Genera el nombre del submódulo (letras a, b, c…) */
@@ -74,7 +96,9 @@ export class DefinicionBaldasComponent implements OnInit {
   }
 
   /** Devuelve las dimensiones del módulo original */
-  dimensionesModulo(nombreModulo: string): { anchura: number; altura: number; profundidad: number } | null {
+  dimensionesModulo(
+    nombreModulo: string
+  ): { anchura: number; altura: number; profundidad: number } | null {
     const modulo = this.estudio.definicionModulos.modulos.find(
       (m) => m.nombre === nombreModulo
     );

@@ -15,6 +15,8 @@ export interface BaldaModulo {
   nombreModulo: string;
   /** Número de baldas verticales (0 = sin divisiones verticales) */
   baldasVerticales: number;
+  /** Posiciones de las baldas verticales en mm desde el borde izquierdo del módulo */
+  posicionesVerticales: number[];
   /** Submódulos creados por las baldas verticales (longitud = baldasVerticales + 1 si > 0, o 1 si = 0) */
   submodulos: SubmoduloBalda[];
 }

@@ -37,18 +37,46 @@
           </div>
         </div>
 
+        <!-- Posiciones de las baldas verticales -->
+        <div class="seccion-posiciones" *ngIf="baldaModulo.baldasVerticales > 0">
+          <div
+            class="posicion-row"
+            *ngFor="let pos of baldaModulo.posicionesVerticales; let j = index; trackBy: trackByIndex"
+          >
+            <div class="form-group">
+              <label [for]="'pos-' + baldaModulo.nombreModulo + '-' + j">
+                Posición balda {{ j + 1 }}
+                <small class="unidad">(mm desde izquierda)</small>
+              </label>
+              <input
+                [id]="'pos-' + baldaModulo.nombreModulo + '-' + j"
+                type="number"
+                [(ngModel)]="baldaModulo.posicionesVerticales[j]"
+                [min]="1"
+                [max]="(dimensionesModulo(baldaModulo.nombreModulo)?.anchura ?? 0) - 1"
+              />
+            </div>
+          </div>
+          <small class="nota-formula nota-anchura-total">
+            Anchura total del módulo: {{ dimensionesModulo(baldaModulo.nombreModulo)?.anchura }} mm
+            — Grosor de cada balda: {{ estudio.constantes.grosorTabla }} mm
+          </small>
+        </div>
+
         <!-- Baldas horizontales por submódulo -->
         <div class="seccion-submodulos" *ngIf="baldaModulo.submodulos.length > 0">
           <div
             class="submodulo-row"
             *ngFor="let sub of baldaModulo.submodulos; let i = index"
           >
+            <div class="submodulo-header" *ngIf="baldaModulo.baldasVerticales > 0">
+              <span class="submodulo-titulo">
+                Sección {{ nombreSubmodulo(baldaModulo, i) }}
+              </span>
+            </div>
             <div class="form-group">
               <label [for]="'bh-' + baldaModulo.nombreModulo + '-' + i">
                 Baldas horizontales
-                <span class="submodulo-nombre" *ngIf="baldaModulo.baldasVerticales > 0">
-                  — sección {{ nombreSubmodulo(baldaModulo, i) }}
-                </span>
               </label>
               <select
                 [id]="'bh-' + baldaModulo.nombreModulo + '-' + i"
