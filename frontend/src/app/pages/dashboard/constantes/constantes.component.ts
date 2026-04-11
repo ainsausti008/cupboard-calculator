@@ -3,11 +3,11 @@ import { EstudioService } from '../../../services/estudio.service';
 import { EstudioData } from '../../../models/estudio.model';
 
 @Component({
-  selector: 'app-parametros-globales',
-  templateUrl: './parametros-globales.component.html',
-  styleUrls: ['./parametros-globales.component.scss'],
+  selector: 'app-constantes',
+  templateUrl: './constantes.component.html',
+  styleUrls: ['./constantes.component.scss'],
 })
-export class ParametrosGlobalesComponent implements OnInit {
+export class ConstantesComponent implements OnInit {
   estudio!: EstudioData;
 
   constructor(private estudioService: EstudioService) {}

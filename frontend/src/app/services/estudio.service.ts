@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, map } from 'rxjs';
-import { EstudioData, crearEstudioVacio } from '../models/estudio.model';
+import { EstudioData, EstudioExportado, crearEstudioVacio, aEstudioExportado, deEstudioExportado } from '../models/estudio.model';
 
 interface DimensionesEstructuraResponse {
   anchura_estructura: number;
@@ -49,8 +49,8 @@ export class EstudioService {
   }
 
   cargarEstudio(json: string): void {
-    const data: EstudioData = JSON.parse(json);
-    this.estudio = data;
+    const data: EstudioExportado = JSON.parse(json);
+    this.estudio = deEstudioExportado(data);
   }
 
   obtenerEstudio(): EstudioData {
@@ -58,7 +58,7 @@ export class EstudioService {
   }
 
   exportarEstudio(): string {
-    return JSON.stringify(this.estudio, null, 2);
+    return JSON.stringify(aEstudioExportado(this.estudio), null, 2);
   }
 
   calcularDimensionesEstructura(): Observable<DimensionesEstructuraResponse> {

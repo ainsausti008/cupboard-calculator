@@ -1,0 +1,93 @@
+<div class="definicion-estudio">
+  <h3>Definición del estudio</h3>
+
+  <div class="form-group">
+    <label for="titulo">Título del estudio</label>
+    <input
+      id="titulo"
+      type="text"
+      [(ngModel)]="estudio.titulo"
+      placeholder="Ej: Armario dormitorio principal"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="descripcion">Descripción del estudio</label>
+    <textarea
+      id="descripcion"
+      [(ngModel)]="estudio.descripcion"
+      placeholder="Descripción opcional del estudio"
+      rows="3"
+    ></textarea>
+  </div>
+
+  <h4>Características del espacio</h4>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="altura">Altura (mm)</label>
+      <input
+        id="altura"
+        type="number"
+        [(ngModel)]="estudio.dimensiones.altura"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="anchura">Anchura (mm)</label>
+      <input
+        id="anchura"
+        type="number"
+        [(ngModel)]="estudio.dimensiones.anchura"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="profundidad">Profundidad (mm)</label>
+      <input
+        id="profundidad"
+        type="number"
+        [(ngModel)]="estudio.dimensiones.profundidad"
+      />
+    </div>
+  </div>
+
+  <div class="form-checks">
+    <div class="form-check-row">
+      <span class="check-label">
+        Pared en la esquina izquierda
+        <span class="info-tooltip" title="Si se indica que sí, hay una pieza más y un remate menos">ℹ</span>
+      </span>
+      <div class="radio-group">
+        <label><input type="radio" name="paredIzq" [value]="true" [(ngModel)]="estudio.caracteristicas.paredEsquinaIzquierda" /> Sí</label>
+        <label><input type="radio" name="paredIzq" [value]="false" [(ngModel)]="estudio.caracteristicas.paredEsquinaIzquierda" /> No</label>
+      </div>
+    </div>
+
+    <div class="form-check-row">
+      <span class="check-label">
+        Pared en la esquina derecha
+        <span class="info-tooltip" title="Si se indica que sí, hay una pieza más y un remate menos">ℹ</span>
+      </span>
+      <div class="radio-group">
+        <label><input type="radio" name="paredDer" [value]="true" [(ngModel)]="estudio.caracteristicas.paredEsquinaDerecha" /> Sí</label>
+        <label><input type="radio" name="paredDer" [value]="false" [(ngModel)]="estudio.caracteristicas.paredEsquinaDerecha" /> No</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-acciones">
+    <div class="contenedor-boton-siguiente">
+      <button
+        class="btn btn-primary"
+        routerLink="../modulos"
+        [disabled]="!formularioCompleto"
+      >
+        Siguiente: Definición de módulos →
+      </button>
+      <div class="tooltip-aviso" *ngIf="!formularioCompleto">
+        Es necesario indicar el título del estudio y las dimensiones del espacio (altura, anchura y profundidad).
+      </div>
+    </div>
+  </div>
+</div>

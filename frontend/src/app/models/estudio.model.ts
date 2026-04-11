@@ -48,6 +48,23 @@ export interface EstudioData {
   };
 }
 
+/** Estructura del JSON exportado/importado */
+export interface EstudioExportado {
+  estudio: {
+    titulo: string;
+    descripcion: string;
+    espacio: {
+      altura: number;
+      anchura: number;
+      profundidad: number;
+      paredEsquinaIzquierda: boolean;
+      paredEsquinaDerecha: boolean;
+    };
+  };
+  constantes: EstudioData['constantes'];
+  definicionModulos: EstudioData['definicionModulos'];
+}
+
 export function crearEstudioVacio(): EstudioData {
   return {
     titulo: '',
@@ -85,5 +102,47 @@ export function crearEstudioVacio(): EstudioData {
       profundidadEstructura: 0,
       modulos: [],
     },
+  };
+}
+
+/** Convierte el modelo interno a la estructura del JSON exportado */
+export function aEstudioExportado(data: EstudioData): EstudioExportado {
+  return {
+    estudio: {
+      titulo: data.titulo,
+      descripcion: data.descripcion,
+      espacio: {
+        altura: data.dimensiones.altura,
+        anchura: data.dimensiones.anchura,
+        profundidad: data.dimensiones.profundidad,
+        paredEsquinaIzquierda: data.caracteristicas.paredEsquinaIzquierda,
+        paredEsquinaDerecha: data.caracteristicas.paredEsquinaDerecha,
+      },
+    },
+    constantes: { ...data.constantes },
+    definicionModulos: { ...data.definicionModulos },
+  };
+}
+
+/** Convierte el JSON importado al modelo interno */
+export function deEstudioExportado(json: EstudioExportado): EstudioData {
+  const base = crearEstudioVacio();
+  return {
+    titulo: json.estudio.titulo,
+    descripcion: json.estudio.descripcion,
+    dimensiones: {
+      altura: json.estudio.espacio.altura,
+      anchura: json.estudio.espacio.anchura,
+      profundidad: json.estudio.espacio.profundidad,
+      anchura_estructura: base.dimensiones.anchura_estructura,
+      altura_estructura: base.dimensiones.altura_estructura,
+      profundidad_estructura: base.dimensiones.profundidad_estructura,
+    },
+    caracteristicas: {
+      paredEsquinaIzquierda: json.estudio.espacio.paredEsquinaIzquierda,
+      paredEsquinaDerecha: json.estudio.espacio.paredEsquinaDerecha,
+    },
+    constantes: { ...json.constantes },
+    definicionModulos: { ...json.definicionModulos },
   };
 }
