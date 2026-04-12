@@ -1,0 +1,235 @@
+<div class="despiece">
+  <h3>Despiece — Resumen del estudio</h3>
+  <p class="descripcion">
+    Revisa que toda la información sea correcta antes de calcular el despiece.
+  </p>
+
+  <div *ngIf="!datosCompletos" class="warning">
+    No hay datos suficientes para mostrar el resumen. Asegúrate de haber completado
+    todas las páginas anteriores (definición de módulos y baldas).
+  </div>
+
+  <div *ngIf="datosCompletos" class="resumen">
+
+    <!-- ─── Fila superior: espacio · estructura · paredes ─── -->
+    <div class="fila-resumen">
+
+      <!-- 1. Dimensiones del espacio -->
+      <div class="seccion-card seccion-card--fila">
+        <div class="seccion-header">
+          <h4>Dimensiones del espacio</h4>
+        </div>
+        <div class="seccion-body">
+          <div class="dato-row">
+            <span class="dato-label">Anchura</span>
+            <span class="dato-valor">{{ estudio.dimensiones.anchura }} mm</span>
+          </div>
+          <div class="dato-row">
+            <span class="dato-label">Altura</span>
+            <span class="dato-valor">{{ estudio.dimensiones.altura }} mm</span>
+          </div>
+          <div class="dato-row">
+            <span class="dato-label">Profundidad</span>
+            <span class="dato-valor">{{ estudio.dimensiones.profundidad }} mm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Dimensiones de la estructura -->
+      <div class="seccion-card seccion-card--fila">
+        <div class="seccion-header">
+          <h4>Dimensiones de la estructura</h4>
+        </div>
+        <div class="seccion-body">
+          <div class="dato-row">
+            <span class="dato-label">Anchura</span>
+            <span class="dato-valor">{{ estudio.dimensiones.anchura_estructura }} mm</span>
+          </div>
+          <div class="dato-row">
+            <span class="dato-label">Altura</span>
+            <span class="dato-valor">{{ estudio.dimensiones.altura_estructura }} mm</span>
+          </div>
+          <div class="dato-row">
+            <span class="dato-label">Profundidad</span>
+            <span class="dato-valor">{{ estudio.dimensiones.profundidad_estructura }} mm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Paredes en esquinas -->
+      <div class="seccion-card seccion-card--fila">
+        <div class="seccion-header">
+          <h4>Paredes en esquinas</h4>
+        </div>
+        <div class="seccion-body">
+          <div class="dato-row">
+            <span class="dato-label">Esquina izquierda</span>
+            <span class="dato-valor" [class.valor-si]="estudio.caracteristicas.paredEsquinaIzquierda" [class.valor-no]="!estudio.caracteristicas.paredEsquinaIzquierda">
+              {{ estudio.caracteristicas.paredEsquinaIzquierda ? 'Sí' : 'No' }}
+            </span>
+          </div>
+          <div class="dato-row">
+            <span class="dato-label">Esquina derecha</span>
+            <span class="dato-valor" [class.valor-si]="estudio.caracteristicas.paredEsquinaDerecha" [class.valor-no]="!estudio.caracteristicas.paredEsquinaDerecha">
+              {{ estudio.caracteristicas.paredEsquinaDerecha ? 'Sí' : 'No' }}
+            </span>
+          </div>
+          <div class="dato-row dato-resumen">
+            <span class="dato-label">Resumen</span>
+            <span class="dato-valor">{{ textoParedes() }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─── 4. Módulos ─── -->
+    <div class="seccion-card seccion-modulos">
+      <div class="seccion-header">
+        <h4>Módulos ({{ estudio.definicionModulos.modulos.length }})</h4>
+      </div>
+      <div class="seccion-body">
+        <div class="modulo-resumen" *ngFor="let modulo of estudio.definicionModulos.modulos">
+          <div class="modulo-header-resumen">
+            <span class="modulo-nombre">{{ modulo.nombre }}</span>
+            <span class="modulo-dims">
+              {{ modulo.anchura }} × {{ modulo.altura }} × {{ modulo.profundidad }} mm
+            </span>
+          </div>
+
+          <!-- Baldas del módulo -->
+          <ng-container *ngIf="baldaDeModulo(modulo.nombre) as balda">
+            <div class="baldas-info">
+
+              <!-- Baldas verticales -->
+              <div class="balda-row">
+                <span class="balda-label">Baldas verticales</span>
+                <span class="balda-valor">{{ balda.baldasVerticales }}</span>
+              </div>
+              <div class="posiciones-verticales" *ngIf="balda.baldasVerticales > 0">
+                <span class="posicion-item" *ngFor="let pos of balda.posicionesVerticales; let i = index">
+                  Posición {{ i + 1 }}: {{ pos }} mm
+                </span>
+              </div>
+
+              <!-- Submódulos y baldas horizontales -->
+              <div class="submodulos-resumen" *ngIf="balda.submodulos.length > 0">
+                <div class="submodulo-item" *ngFor="let sub of balda.submodulos; let i = index">
+                  <span class="submodulo-nombre">
+                    {{ balda.baldasVerticales > 0 ? 'Sección ' + nombreSubmodulo(balda, i) : 'Módulo completo' }}
+                  </span>
+                  <span class="submodulo-baldas-h">
+                    {{ sub.baldasHorizontales }} balda{{ sub.baldasHorizontales !== 1 ? 's' : '' }} horizontal{{ sub.baldasHorizontales !== 1 ? 'es' : '' }}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </ng-container>
+
+          <!-- Si no hay info de baldas -->
+          <div class="sin-baldas" *ngIf="!baldaDeModulo(modulo.nombre)">
+            <span class="nota-sin-datos">Sin información de baldas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── 5. Puertas ─── -->
+    <div class="seccion-card">
+      <div class="seccion-header">
+        <h4>Puertas</h4>
+      </div>
+      <div class="seccion-body">
+        <div class="dato-row">
+          <span class="dato-label">Cantidad de puertas</span>
+          <span class="dato-valor">{{ estudio.definicionModulos.puertas }}</span>
+        </div>
+        <div class="dato-row">
+          <span class="dato-label">Anchura de cada puerta</span>
+          <span class="dato-valor">{{ estudio.definicionModulos.anchuraPuerta }} mm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Botón de cálculo ─── -->
+    <div class="accion-despiece">
+      <button
+        class="btn btn-calcular"
+        (click)="calcularDespiece()"
+        [disabled]="cargandoDespiece"
+      >
+        {{ cargandoDespiece ? 'Calculando…' : 'Calcular despiece' }}
+      </button>
+    </div>
+
+    <!-- ─── Error ─── -->
+    <p *ngIf="errorDespiece" class="error">{{ errorDespiece }}</p>
+
+    <!-- ─── Tabla de resultados ─── -->
+    <div *ngIf="piezas.length > 0" class="seccion-card seccion-resultado">
+      <div class="seccion-header seccion-header--resultado">
+        <h4>Resultado del despiece</h4>
+      </div>
+      <div class="seccion-body seccion-body--tabla">
+        <table class="tabla-despiece">
+          <thead>
+            <tr>
+              <th>Pieza</th>
+              <th class="col-unidades">Unidades</th>
+              <th>Dimensiones</th>
+              <th>Cálculo</th>
+              <th>Módulo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pieza of piezas">
+              <td class="celda-pieza">{{ pieza.pieza }}</td>
+              <td class="celda-unidades">{{ pieza.unidades }}</td>
+              <td class="celda-dimensiones">{{ formatoDimensiones(pieza) }}</td>
+              <td class="celda-calculo">{{ pieza.calculo }}</td>
+              <td class="celda-modulo">{{ pieza.modulo }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── Tabla de resultados agregados ─── -->
+    <div *ngIf="piezasAgregadas.length > 0" class="seccion-card seccion-resultado seccion-resultado--agregado">
+      <div class="seccion-header seccion-header--agregado">
+        <h4>Resultado del despiece agregado</h4>
+      </div>
+      <div class="seccion-body seccion-body--tabla">
+        <table class="tabla-despiece">
+          <thead>
+            <tr>
+              <th>Pieza</th>
+              <th class="col-unidades">Unidades</th>
+              <th>Dimensiones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pieza of piezasAgregadas">
+              <td class="celda-pieza">{{ pieza.pieza }}</td>
+              <td class="celda-unidades">{{ pieza.unidades }}</td>
+              <td class="celda-dimensiones">{{ formatoDimensionesAgregada(pieza) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="accion-exportar">
+        <button class="btn btn-exportar" (click)="descargarExcel()">
+          📥 Descargar Excel
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav-acciones">
+    <button class="btn btn-secondary" routerLink="../baldas">
+      ← Volver: Definición de baldas
+    </button>
+  </div>
+</div>

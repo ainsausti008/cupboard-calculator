@@ -1,0 +1,108 @@
+<div class="definicion-baldas">
+  <h3>Definición de baldas</h3>
+  <p class="descripcion">
+    Para cada módulo, define primero las <strong>baldas verticales</strong> (que dividen el módulo
+    en secciones de izquierda a derecha). Después, dentro de cada sección resultante, define las
+    <strong>baldas horizontales</strong> (que dividen de arriba a abajo).
+  </p>
+
+  <div class="modulos-lista" *ngIf="estudio.definicionBaldas.length > 0">
+    <div class="modulo-card" *ngFor="let baldaModulo of estudio.definicionBaldas">
+      <div class="modulo-header">
+        <h4>Módulo {{ baldaModulo.nombreModulo }}</h4>
+        <span class="modulo-dims" *ngIf="dimensionesModulo(baldaModulo.nombreModulo) as dims">
+          {{ dims.anchura }} × {{ dims.altura }} × {{ dims.profundidad }} mm
+        </span>
+      </div>
+
+      <div class="modulo-body">
+        <!-- Baldas verticales -->
+        <div class="seccion-baldas">
+          <div class="form-group">
+            <label [for]="'bv-' + baldaModulo.nombreModulo">Baldas verticales</label>
+            <select
+              [id]="'bv-' + baldaModulo.nombreModulo"
+              [(ngModel)]="baldaModulo.baldasVerticales"
+              (ngModelChange)="onCambioBaldasVerticales(baldaModulo)"
+            >
+              <option *ngFor="let n of opcionesBaldasVerticales" [ngValue]="n">
+                {{ n }}
+              </option>
+            </select>
+            <small class="nota-formula">
+              {{ baldaModulo.baldasVerticales === 0
+                ? 'Sin divisiones verticales'
+                : baldaModulo.baldasVerticales + ' balda' + (baldaModulo.baldasVerticales > 1 ? 's' : '') + ' → ' + (baldaModulo.baldasVerticales + 1) + ' secciones' }}
+            </small>
+          </div>
+        </div>
+
+        <!-- Posiciones de las baldas verticales -->
+        <div class="seccion-posiciones" *ngIf="baldaModulo.baldasVerticales > 0">
+          <div
+            class="posicion-row"
+            *ngFor="let pos of baldaModulo.posicionesVerticales; let j = index; trackBy: trackByIndex"
+          >
+            <div class="form-group">
+              <label [for]="'pos-' + baldaModulo.nombreModulo + '-' + j">
+                Posición balda {{ j + 1 }}
+                <small class="unidad">(mm desde izquierda)</small>
+              </label>
+              <input
+                [id]="'pos-' + baldaModulo.nombreModulo + '-' + j"
+                type="number"
+                [(ngModel)]="baldaModulo.posicionesVerticales[j]"
+                [min]="1"
+                [max]="(dimensionesModulo(baldaModulo.nombreModulo)?.anchura ?? 0) - 1"
+              />
+            </div>
+          </div>
+          <small class="nota-formula nota-anchura-total">
+            Anchura total del módulo: {{ dimensionesModulo(baldaModulo.nombreModulo)?.anchura }} mm
+            — Grosor de cada balda: {{ estudio.constantes.grosorTabla }} mm
+          </small>
+        </div>
+
+        <!-- Baldas horizontales por submódulo -->
+        <div class="seccion-submodulos" *ngIf="baldaModulo.submodulos.length > 0">
+          <div
+            class="submodulo-row"
+            *ngFor="let sub of baldaModulo.submodulos; let i = index"
+          >
+            <div class="submodulo-header" *ngIf="baldaModulo.baldasVerticales > 0">
+              <span class="submodulo-titulo">
+                Sección {{ nombreSubmodulo(baldaModulo, i) }}
+              </span>
+            </div>
+            <div class="form-group">
+              <label [for]="'bh-' + baldaModulo.nombreModulo + '-' + i">
+                Baldas horizontales
+              </label>
+              <select
+                [id]="'bh-' + baldaModulo.nombreModulo + '-' + i"
+                [(ngModel)]="sub.baldasHorizontales"
+              >
+                <option *ngFor="let n of opcionesBaldasHorizontales" [ngValue]="n">
+                  {{ n }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p *ngIf="estudio.definicionBaldas.length === 0" class="warning">
+    No hay módulos definidos. Vuelve a la página anterior para definirlos.
+  </p>
+
+  <div class="nav-acciones">
+    <button class="btn btn-secondary" routerLink="../modulos">
+      ← Volver: Definición de módulos
+    </button>
+    <button class="btn btn-primary" routerLink="../despiece">
+      Siguiente: Despiece →
+    </button>
+  </div>
+</div>
