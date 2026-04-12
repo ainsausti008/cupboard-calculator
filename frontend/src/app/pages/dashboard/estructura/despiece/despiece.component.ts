@@ -1,6 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { EstudioData, BaldaModulo, ModuloEstudio } from '../../../../models/estudio.model';
 import { EstudioService, PiezaDespiece } from '../../../../services/estudio.service';
+import * as XLSX from 'xlsx';
+
+export interface PiezaDespieceAgregada {
+  pieza: string;
+  unidades: number;
+  largo: number;
+  alto: number;
+  grosor: number;
+}
 
 @Component({
   selector: 'app-despiece',
@@ -15,6 +24,7 @@ export class DespieceComponent implements OnInit {
 
   /** Resultado del despiece */
   piezas: PiezaDespiece[] = [];
+  piezasAgregadas: PiezaDespieceAgregada[] = [];
   cargandoDespiece = false;
   errorDespiece: string | null = null;
 
@@ -68,6 +78,7 @@ export class DespieceComponent implements OnInit {
     this.estudioService.calcularDespiece().subscribe({
       next: (piezas) => {
         this.piezas = piezas;
+        this.piezasAgregadas = this.agregarPiezas(piezas);
         this.cargandoDespiece = false;
       },
       error: (err) => {
@@ -76,5 +87,58 @@ export class DespieceComponent implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  /**
+   * Agrupa las piezas por dimensiones (largo × alto × grosor).
+   * Las piezas con las mismas dimensiones se fusionan en una sola fila,
+   * sumando las unidades y concatenando los nombres con su módulo.
+   */
+  private agregarPiezas(piezas: PiezaDespiece[]): PiezaDespieceAgregada[] {
+    const mapa = new Map<string, PiezaDespieceAgregada>();
+
+    for (const p of piezas) {
+      const clave = `${p.largo}|${p.alto}|${p.grosor}`;
+      const nombreCompleto = p.modulo && p.modulo !== '—'
+        ? `${p.pieza} (${p.modulo})`
+        : p.pieza;
+
+      const existente = mapa.get(clave);
+      if (existente) {
+        existente.pieza += `, ${nombreCompleto}`;
+        existente.unidades += p.unidades;
+      } else {
+        mapa.set(clave, {
+          pieza: nombreCompleto,
+          unidades: p.unidades,
+          largo: p.largo,
+          alto: p.alto,
+          grosor: p.grosor,
+        });
+      }
+    }
+
+    return Array.from(mapa.values());
+  }
+
+  /** Formatea las dimensiones de una pieza agregada */
+  formatoDimensionesAgregada(pieza: PiezaDespieceAgregada): string {
+    return `${pieza.largo} × ${pieza.alto} × ${pieza.grosor} mm`;
+  }
+
+  /** Descarga la tabla agregada como fichero Excel (.xlsx) */
+  descargarExcel(): void {
+    const datos = this.piezasAgregadas.map(p => ({
+      Pieza: p.pieza,
+      Unidades: p.unidades,
+      'Largo (mm)': p.largo,
+      'Alto (mm)': p.alto,
+      'Grosor (mm)': p.grosor,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(datos);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Despiece agregado');
+    XLSX.writeFile(wb, 'despiece_agregado.xlsx');
   }
 }

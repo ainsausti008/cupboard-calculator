@@ -193,6 +193,36 @@
       </div>
     </div>
 
+    <!-- ─── Tabla de resultados agregados ─── -->
+    <div *ngIf="piezasAgregadas.length > 0" class="seccion-card seccion-resultado seccion-resultado--agregado">
+      <div class="seccion-header seccion-header--agregado">
+        <h4>Resultado del despiece agregado</h4>
+      </div>
+      <div class="seccion-body seccion-body--tabla">
+        <table class="tabla-despiece">
+          <thead>
+            <tr>
+              <th>Pieza</th>
+              <th class="col-unidades">Unidades</th>
+              <th>Dimensiones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pieza of piezasAgregadas">
+              <td class="celda-pieza">{{ pieza.pieza }}</td>
+              <td class="celda-unidades">{{ pieza.unidades }}</td>
+              <td class="celda-dimensiones">{{ formatoDimensionesAgregada(pieza) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="accion-exportar">
+        <button class="btn btn-exportar" (click)="descargarExcel()">
+          📥 Descargar Excel
+        </button>
+      </div>
+    </div>
+
   </div>
 
   <div class="nav-acciones">
