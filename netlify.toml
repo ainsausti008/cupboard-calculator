@@ -9,7 +9,7 @@
 # Proxy de las llamadas /api/* al backend en Railway
 [[redirects]]
   from = "/api/*"
-  to = "https://RAILWAY_URL_PLACEHOLDER/api/:splat"
+  to = "https://cupboard-calculator-production.up.railway.app/api/:splat"
   status = 200
   force = true
 
