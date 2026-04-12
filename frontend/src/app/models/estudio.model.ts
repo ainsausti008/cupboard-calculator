@@ -55,6 +55,10 @@ export interface EstudioData {
     modulosVerticales: number;
     /** Altura personalizada del módulo 1 (solo cuando hay 2 módulos verticales) */
     alturaModulo1: number | null;
+    /** Número de puertas de la opción seleccionada */
+    puertas: number;
+    /** Anchura de cada puerta (mm) */
+    anchuraPuerta: number;
     /** Dimensiones de la estructura usadas en el cálculo */
     anchuraEstructura: number;
     alturaEstructura: number;
@@ -115,6 +119,8 @@ export function crearEstudioVacio(): EstudioData {
       opcionHorizontalIndex: -1,
       modulosVerticales: 1,
       alturaModulo1: null,
+      puertas: 0,
+      anchuraPuerta: 0,
       anchuraEstructura: 0,
       alturaEstructura: 0,
       profundidadEstructura: 0,

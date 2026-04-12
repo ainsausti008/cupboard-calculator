@@ -140,6 +140,8 @@ export class DefinicionModulosComponent implements OnInit {
     def.alturaModulo1 = +this.modulosVerticalesSeleccionados === 2
       ? this.alturaModulo1
       : null;
+    def.puertas = this.opcionSeleccionada ? this.opcionSeleccionada.puertas : 0;
+    def.anchuraPuerta = this.opcionSeleccionada ? this.opcionSeleccionada.anchura_puerta : 0;
     def.anchuraEstructura = this.estudio.dimensiones.anchura_estructura;
     def.alturaEstructura = this.estudio.dimensiones.altura_estructura;
     def.profundidadEstructura = this.estudio.dimensiones.profundidad_estructura;
