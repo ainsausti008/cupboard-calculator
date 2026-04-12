@@ -534,8 +534,13 @@ def calcular_despiece(
     Devuelve
     --------
     list[dict]
-        Lista de piezas con: pieza, unidades, largo, alto, grosor, modulo.
+        Lista de piezas con: pieza, unidades, largo, alto, grosor, modulo, calculo.
     """
+
+    def _f(n: float) -> str:
+        """Formatea un número sin decimales innecesarios."""
+        return f"{n:g}"
+
     piezas: list[dict] = []
 
     for modulo in modulos:
@@ -546,20 +551,26 @@ def calcular_despiece(
 
         # Los módulos inferiores (nombre empieza por "1") llegan al suelo
         es_inferior = nombre.startswith("1")
+        ds = distancia_suelo if es_inferior else 0
 
         # --- Trasera ---
         dims = calcular_pieza_trasera(
             anchura,
             altura,
             grosor_tabla_trasera,
-            distancia_suelo=distancia_suelo if es_inferior else 0,
+            distancia_suelo=ds,
         )
+        # Cálculo: largo = anchura, alto = altura (+ dist_suelo), grosor = grosor_trasera
+        c_largo = _f(anchura)
+        c_alto = f"{_f(altura)} + {_f(ds)}" if ds else _f(altura)
+        c_grosor = _f(grosor_tabla_trasera)
         piezas.append(
             {
                 "pieza": "Trasera",
                 "unidades": 1,
                 **dims,
                 "modulo": nombre,
+                "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
             }
         )
 
@@ -569,14 +580,19 @@ def calcular_despiece(
             profundidad,
             grosor_tabla_trasera,
             grosor_tabla,
-            distancia_suelo=distancia_suelo if es_inferior else 0,
+            distancia_suelo=ds,
         )
+        # Cálculo: largo = altura (+ dist_suelo), alto = prof − grosor_trasera, grosor
+        c_largo = f"{_f(altura)} + {_f(ds)}" if ds else _f(altura)
+        c_alto = f"{_f(profundidad)} − {_f(grosor_tabla_trasera)}"
+        c_grosor = _f(grosor_tabla)
         piezas.append(
             {
                 "pieza": "Costado",
                 "unidades": 2,
                 **dims,
                 "modulo": nombre,
+                "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
             }
         )
 
@@ -584,12 +600,18 @@ def calcular_despiece(
         dims = calcular_pieza_base(
             anchura, profundidad, grosor_tabla_trasera, grosor_tabla
         )
+        # Cálculo: largo = anchura − 2×grosor, alto = prof − grosor_trasera, grosor
+        c_largo = f"{_f(anchura)} − 2 × {_f(grosor_tabla)}"
+        c_alto = f"{_f(profundidad)} − {_f(grosor_tabla_trasera)}"
+        c_grosor = _f(grosor_tabla)
+        calculo_base = f"({c_largo}, {c_alto}, {c_grosor})"
         piezas.append(
             {
                 "pieza": "Base inferior",
                 "unidades": 1,
                 **dims,
                 "modulo": nombre,
+                "calculo": calculo_base,
             }
         )
 
@@ -600,6 +622,7 @@ def calcular_despiece(
                 "unidades": 1,
                 **dims,
                 "modulo": nombre,
+                "calculo": calculo_base,
             }
         )
 
@@ -619,12 +642,17 @@ def calcular_despiece(
                 grosor_tabla=grosor_tabla,
                 diferencia_profundidad_balda_modulo=diferencia_profundidad_balda_modulo,
             )
+            # Cálculo: largo = altura − 2×grosor, alto = prof − grosor_trasera − dif, grosor
+            c_largo = f"{_f(altura)} − 2 × {_f(grosor_tabla)}"
+            c_alto = f"{_f(profundidad)} − {_f(grosor_tabla_trasera)} − {_f(diferencia_profundidad_balda_modulo)}"
+            c_grosor = _f(grosor_tabla)
             piezas.append(
                 {
                     "pieza": "Balda vertical",
                     "unidades": baldas_vert,
                     **dims_bv,
                     "modulo": nombre,
+                    "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
                 }
             )
 
@@ -643,12 +671,17 @@ def calcular_despiece(
                     grosor_tabla=grosor_tabla,
                     diferencia_profundidad_balda_modulo=diferencia_profundidad_balda_modulo,
                 )
+                # Cálculo: largo = anchura − 2×grosor, alto = prof − grosor_trasera − dif, grosor
+                c_largo = f"{_f(anchura)} − 2 × {_f(grosor_tabla)}"
+                c_alto = f"{_f(profundidad)} − {_f(grosor_tabla_trasera)} − {_f(diferencia_profundidad_balda_modulo)}"
+                c_grosor = _f(grosor_tabla)
                 piezas.append(
                     {
                         "pieza": "Balda horizontal",
                         "unidades": total_baldas_h,
                         **dims_bh,
                         "modulo": nombre,
+                        "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
                     }
                 )
         else:
@@ -669,6 +702,14 @@ def calcular_despiece(
                 letra = chr(97 + idx_sub)  # a, b, c…
                 nombre_seccion = f"{nombre}-{letra}"
 
+                # Cálculo del largo (anchura subsección) según posición
+                if idx_sub == 0:
+                    c_largo = f"{_f(posiciones[0])} − {_f(grosor_tabla)} − {_f(grosor_tabla)}/2"
+                elif idx_sub == total_subsecciones - 1:
+                    c_largo = f"{_f(anchura)} − {_f(posiciones[-1])} − {_f(grosor_tabla)} − {_f(grosor_tabla)}/2"
+                else:
+                    c_largo = f"{_f(posiciones[idx_sub])} − {_f(posiciones[idx_sub - 1])} − {_f(grosor_tabla)}"
+
                 dims_bh = calcular_pieza_balda_horizontal_en_subseccion(
                     anchura_subseccion=anchura_sub,
                     profundidad_modulo=profundidad,
@@ -677,12 +718,20 @@ def calcular_despiece(
                     diferencia_profundidad_balda_modulo=diferencia_profundidad_balda_modulo,
                     diferencia_profundidad_balda_vertical_horizontal=diferencia_profundidad_balda_vertical_horizontal,
                 )
+                # alto = prof − grosor_trasera − dif_modulo − dif_vert_horiz
+                c_alto = (
+                    f"{_f(profundidad)} − {_f(grosor_tabla_trasera)}"
+                    f" − {_f(diferencia_profundidad_balda_modulo)}"
+                    f" − {_f(diferencia_profundidad_balda_vertical_horizontal)}"
+                )
+                c_grosor = _f(grosor_tabla)
                 piezas.append(
                     {
                         "pieza": f"Balda horizontal (secc. {letra})",
                         "unidades": baldas_h,
                         **dims_bh,
                         "modulo": nombre_seccion,
+                        "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
                     }
                 )
 
@@ -691,12 +740,17 @@ def calcular_despiece(
         dims_p = calcular_pieza_puerta(
             anchura_puerta, altura_estructura, grosor_tabla, distancia_suelo
         )
+        # Cálculo: largo = anchura_puerta, alto = alt_estr − dist_suelo − grosor/2 − grosor/2, grosor
+        c_largo = _f(anchura_puerta)
+        c_alto = f"{_f(altura_estructura)} − {_f(distancia_suelo)} − {_f(grosor_tabla)}/2 − {_f(grosor_tabla)}/2"
+        c_grosor = _f(grosor_tabla)
         piezas.append(
             {
                 "pieza": "Puerta",
                 "unidades": puertas,
                 **dims_p,
                 "modulo": "—",
+                "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
             }
         )
 

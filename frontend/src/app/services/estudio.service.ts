@@ -42,6 +42,7 @@ export interface PiezaDespiece {
   alto: number;
   grosor: number;
   modulo: string;
+  calculo: string;
 }
 
 interface DespieceResponse {

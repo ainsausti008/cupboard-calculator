@@ -160,6 +160,7 @@ class PiezaDespiece(BaseModel):
     alto: float
     grosor: float
     modulo: str
+    calculo: str
 
 
 class DespieceResponse(BaseModel):
