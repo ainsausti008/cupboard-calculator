@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, map } from 'rxjs';
 import { EstudioData, EstudioExportado, BaldaModulo, crearEstudioVacio, aEstudioExportado, deEstudioExportado } from '../models/estudio.model';
+import { environment } from '../../environments/environment';
 
 interface DimensionesEstructuraResponse {
   anchura_estructura: number;
@@ -53,7 +54,7 @@ interface DespieceResponse {
   providedIn: 'root',
 })
 export class EstudioService {
-  private readonly apiUrl = 'http://localhost:8000/api';
+  private readonly apiUrl = environment.apiUrl;
   private estudio: EstudioData = crearEstudioVacio();
 
   constructor(private http: HttpClient) {}

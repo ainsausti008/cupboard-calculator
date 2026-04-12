@@ -1,0 +1,20 @@
+[build]
+  base = "frontend"
+  command = "npm ci && npm run build"
+  publish = "dist/frontend"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Proxy de las llamadas /api/* al backend en Railway
+[[redirects]]
+  from = "/api/*"
+  to = "https://RAILWAY_URL_PLACEHOLDER/api/:splat"
+  status = 200
+  force = true
+
+# SPA: cualquier ruta devuelve index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
