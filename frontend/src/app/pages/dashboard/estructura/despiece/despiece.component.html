@@ -154,10 +154,43 @@
 
     <!-- ─── Botón de cálculo ─── -->
     <div class="accion-despiece">
-      <button class="btn btn-calcular" disabled>
-        Calcular despiece
+      <button
+        class="btn btn-calcular"
+        (click)="calcularDespiece()"
+        [disabled]="cargandoDespiece"
+      >
+        {{ cargandoDespiece ? 'Calculando…' : 'Calcular despiece' }}
       </button>
-      <small class="nota-proximamente">Próximamente — funcionalidad en desarrollo</small>
+    </div>
+
+    <!-- ─── Error ─── -->
+    <p *ngIf="errorDespiece" class="error">{{ errorDespiece }}</p>
+
+    <!-- ─── Tabla de resultados ─── -->
+    <div *ngIf="piezas.length > 0" class="seccion-card seccion-resultado">
+      <div class="seccion-header seccion-header--resultado">
+        <h4>Resultado del despiece</h4>
+      </div>
+      <div class="seccion-body seccion-body--tabla">
+        <table class="tabla-despiece">
+          <thead>
+            <tr>
+              <th>Pieza</th>
+              <th class="col-unidades">Unidades</th>
+              <th>Dimensiones</th>
+              <th>Módulo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pieza of piezas">
+              <td class="celda-pieza">{{ pieza.pieza }}</td>
+              <td class="celda-unidades">{{ pieza.unidades }}</td>
+              <td class="celda-dimensiones">{{ formatoDimensiones(pieza) }}</td>
+              <td class="celda-modulo">{{ pieza.modulo }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </div>

@@ -105,3 +105,62 @@ class ModulosDefinidosResponse(BaseModel):
     """Lista de módulos con sus dimensiones."""
 
     modulos: list[ModuloDefinido]
+
+
+# ---------------------------------------------------------------------------
+# Despiece
+# ---------------------------------------------------------------------------
+
+
+class SubmoduloBaldaInput(BaseModel):
+    """Información de baldas horizontales de un submódulo."""
+
+    baldasHorizontales: int
+
+
+class BaldaModuloInput(BaseModel):
+    """Configuración de baldas de un módulo."""
+
+    nombreModulo: str
+    baldasVerticales: int
+    posicionesVerticales: list[float]
+    submodulos: list[SubmoduloBaldaInput]
+
+
+class ModuloInput(BaseModel):
+    """Dimensiones de un módulo individual (entrada para despiece)."""
+
+    nombre: str
+    anchura: float
+    altura: float
+    profundidad: float
+
+
+class DespieceRequest(BaseModel):
+    """Datos de entrada para calcular el despiece completo del armario."""
+
+    modulos: list[ModuloInput]
+    baldas: list[BaldaModuloInput]
+    grosor_tabla: float
+    grosor_tabla_trasera: float
+    diferencia_profundidad_balda_modulo: float
+    diferencia_profundidad_balda_vertical_horizontal: float
+    puertas: int
+    anchura_puerta: float
+
+
+class PiezaDespiece(BaseModel):
+    """Una pieza individual del despiece."""
+
+    pieza: str
+    unidades: int
+    largo: float
+    alto: float
+    grosor: float
+    modulo: str
+
+
+class DespieceResponse(BaseModel):
+    """Resultado del cálculo de despiece."""
+
+    piezas: list[PiezaDespiece]

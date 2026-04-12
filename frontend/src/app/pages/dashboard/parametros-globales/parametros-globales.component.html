@@ -114,4 +114,28 @@
       />
     </div>
   </div>
+
+  <h3>Constantes de baldas</h3>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="difProfBaldaModulo">Diferencia de profundidad entre balda y módulo (mm)</label>
+      <input
+        id="difProfBaldaModulo"
+        type="number"
+        [(ngModel)]="estudio.constantes.diferenciaProfundidadBaldaModulo"
+        placeholder="1"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="difProfBaldaVH">Diferencia de profundidad entre balda vertical y horizontal (mm)</label>
+      <input
+        id="difProfBaldaVH"
+        type="number"
+        [(ngModel)]="estudio.constantes.diferenciaProfundidadBaldaVerticalHorizontal"
+        placeholder="1"
+      />
+    </div>
+  </div>
 </div>

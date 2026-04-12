@@ -8,6 +8,7 @@ from .formulas import (
     calcular_opciones_modulos,
     sugerir_modulos_verticales,
     calcular_modulos_definidos,
+    calcular_despiece,
 )
 from .schemas import (
     DimensionesEstructuraRequest,
@@ -18,6 +19,8 @@ from .schemas import (
     ModulosVerticalesResponse,
     ModulosDefinidosRequest,
     ModulosDefinidosResponse,
+    DespieceRequest,
+    DespieceResponse,
 )
 
 app = FastAPI(title="Cupboard Calculator API", version="0.1.0")
@@ -116,3 +119,25 @@ async def calcular_modulos_definidos_endpoint(
         altura_modulo1=datos.altura_modulo1,
     )
     return ModulosDefinidosResponse(modulos=modulos)
+
+
+@app.post(
+    "/api/calcular-despiece",
+    response_model=DespieceResponse,
+)
+async def calcular_despiece_endpoint(
+    datos: DespieceRequest,
+) -> DespieceResponse:
+    """Calcula el despiece completo del armario: piezas estructurales,
+    baldas y puertas con sus dimensiones."""
+    piezas = calcular_despiece(
+        modulos=[m.model_dump() for m in datos.modulos],
+        baldas=[b.model_dump() for b in datos.baldas],
+        grosor_tabla=datos.grosor_tabla,
+        grosor_tabla_trasera=datos.grosor_tabla_trasera,
+        diferencia_profundidad_balda_modulo=datos.diferencia_profundidad_balda_modulo,
+        diferencia_profundidad_balda_vertical_horizontal=datos.diferencia_profundidad_balda_vertical_horizontal,
+        puertas=datos.puertas,
+        anchura_puerta=datos.anchura_puerta,
+    )
+    return DespieceResponse(piezas=piezas)

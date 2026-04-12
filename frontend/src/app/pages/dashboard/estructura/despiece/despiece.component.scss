@@ -271,10 +271,92 @@
   }
 }
 
-.nota-proximamente {
-  font-size: 0.8rem;
-  color: #95a5a6;
-  font-style: italic;
+.error {
+  color: #e74c3c;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* --- Tabla de resultados del despiece --- */
+
+.seccion-resultado {
+  margin-top: 0.25rem;
+}
+
+.seccion-header--resultado {
+  background-color: #27ae60;
+}
+
+.seccion-body--tabla {
+  padding: 0;
+  overflow-x: auto;
+}
+
+.tabla-despiece {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+
+  thead {
+    background-color: #f5f6fa;
+
+    th {
+      padding: 0.6rem 1rem;
+      text-align: left;
+      font-weight: 700;
+      color: #2c3e50;
+      border-bottom: 2px solid #d5dbdb;
+      white-space: nowrap;
+    }
+
+    .col-unidades {
+      text-align: center;
+    }
+  }
+
+  tbody {
+    tr {
+      transition: background-color 0.15s;
+
+      &:nth-child(even) {
+        background-color: #fafbfc;
+      }
+
+      &:hover {
+        background-color: #eaf6fd;
+      }
+    }
+
+    td {
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      color: #34495e;
+    }
+  }
+}
+
+.celda-pieza {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.celda-unidades {
+  text-align: center;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.celda-dimensiones {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.88rem;
+  color: #34495e;
+  letter-spacing: 0.02em;
+}
+
+.celda-modulo {
+  font-weight: 600;
+  color: #7f8c8d;
 }
 
 /* --- Navegación --- */

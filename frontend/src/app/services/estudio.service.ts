@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, map } from 'rxjs';
-import { EstudioData, EstudioExportado, crearEstudioVacio, aEstudioExportado, deEstudioExportado } from '../models/estudio.model';
+import { EstudioData, EstudioExportado, BaldaModulo, crearEstudioVacio, aEstudioExportado, deEstudioExportado } from '../models/estudio.model';
 
 interface DimensionesEstructuraResponse {
   anchura_estructura: number;
@@ -33,6 +33,19 @@ export interface ModuloDefinido {
 
 interface ModulosDefinidosResponse {
   modulos: ModuloDefinido[];
+}
+
+export interface PiezaDespiece {
+  pieza: string;
+  unidades: number;
+  largo: number;
+  alto: number;
+  grosor: number;
+  modulo: string;
+}
+
+interface DespieceResponse {
+  piezas: PiezaDespiece[];
 }
 
 @Injectable({
@@ -142,5 +155,37 @@ export class EstudioService {
         body
       )
       .pipe(map((res) => res.modulos));
+  }
+
+  calcularDespiece(): Observable<PiezaDespiece[]> {
+    const body = {
+      modulos: this.estudio.definicionModulos.modulos.map(m => ({
+        nombre: m.nombre,
+        anchura: m.anchura,
+        altura: m.altura,
+        profundidad: m.profundidad,
+      })),
+      baldas: this.estudio.definicionBaldas.map(b => ({
+        nombreModulo: b.nombreModulo,
+        baldasVerticales: b.baldasVerticales,
+        posicionesVerticales: b.posicionesVerticales,
+        submodulos: b.submodulos.map(s => ({
+          baldasHorizontales: s.baldasHorizontales,
+        })),
+      })),
+      grosor_tabla: this.estudio.constantes.grosorTabla,
+      grosor_tabla_trasera: this.estudio.constantes.grosorTablaTrasera,
+      diferencia_profundidad_balda_modulo: this.estudio.constantes.diferenciaProfundidadBaldaModulo,
+      diferencia_profundidad_balda_vertical_horizontal: this.estudio.constantes.diferenciaProfundidadBaldaVerticalHorizontal,
+      puertas: this.estudio.definicionModulos.puertas,
+      anchura_puerta: this.estudio.definicionModulos.anchuraPuerta,
+    };
+
+    return this.http
+      .post<DespieceResponse>(
+        `${this.apiUrl}/calcular-despiece`,
+        body
+      )
+      .pipe(map((res) => res.piezas));
   }
 }
