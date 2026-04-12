@@ -139,5 +139,7 @@ async def calcular_despiece_endpoint(
         diferencia_profundidad_balda_vertical_horizontal=datos.diferencia_profundidad_balda_vertical_horizontal,
         puertas=datos.puertas,
         anchura_puerta=datos.anchura_puerta,
+        distancia_suelo=datos.distancia_suelo,
+        altura_estructura=datos.altura_estructura,
     )
     return DespieceResponse(piezas=piezas)

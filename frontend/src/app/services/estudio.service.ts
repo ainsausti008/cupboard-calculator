@@ -179,6 +179,8 @@ export class EstudioService {
       diferencia_profundidad_balda_vertical_horizontal: this.estudio.constantes.diferenciaProfundidadBaldaVerticalHorizontal,
       puertas: this.estudio.definicionModulos.puertas,
       anchura_puerta: this.estudio.definicionModulos.anchuraPuerta,
+      distancia_suelo: this.estudio.constantes.distanciaSuelo,
+      altura_estructura: this.estudio.dimensiones.altura_estructura,
     };
 
     return this.http

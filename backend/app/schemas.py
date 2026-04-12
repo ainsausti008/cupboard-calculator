@@ -147,6 +147,8 @@ class DespieceRequest(BaseModel):
     diferencia_profundidad_balda_vertical_horizontal: float
     puertas: int
     anchura_puerta: float
+    distancia_suelo: float
+    altura_estructura: float
 
 
 class PiezaDespiece(BaseModel):
