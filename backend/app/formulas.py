@@ -244,18 +244,23 @@ def calcular_pieza_trasera(
     anchura_modulo: float,
     altura_modulo: float,
     grosor_tabla_trasera: float,
+    distancia_suelo: float = 0,
 ) -> dict:
     """Calcula las dimensiones de la tabla trasera de un módulo.
 
-    La trasera se superpone a los costados y a las bases, por lo que sus
-    dimensiones coinciden con las del módulo completo.
+    La trasera se superpone a los costados y a las bases, por lo que su
+    anchura coincide con la del módulo completo.
+
+    Para los módulos inferiores (que llegan hasta el suelo) se suma la
+    distancia al suelo a la altura de la trasera.
 
     Dimensiones:
-        anchura_modulo × altura_modulo × grosor_tabla_trasera
+        anchura_modulo × (altura_modulo + distancia_suelo) × grosor_tabla_trasera
     """
+    altura_trasera = altura_modulo + distancia_suelo
     return {
         "largo": round(anchura_modulo, 2),
-        "alto": round(altura_modulo, 2),
+        "alto": round(altura_trasera, 2),
         "grosor": round(grosor_tabla_trasera, 2),
     }
 
@@ -497,8 +502,8 @@ def calcular_despiece(
     2 costados, base inferior, base superior) y las baldas verticales
     y horizontales según la configuración elegida.
 
-    Los costados de los módulos inferiores (fila 1, los que llegan al
-    suelo) suman la distancia al suelo en su altura.
+    Las traseras y los costados de los módulos inferiores (fila 1, los
+    que llegan al suelo) suman la distancia al suelo en su altura.
 
     Finalmente se añaden las puertas.
 
@@ -539,8 +544,16 @@ def calcular_despiece(
         altura = modulo["altura"]
         profundidad = modulo["profundidad"]
 
+        # Los módulos inferiores (nombre empieza por "1") llegan al suelo
+        es_inferior = nombre.startswith("1")
+
         # --- Trasera ---
-        dims = calcular_pieza_trasera(anchura, altura, grosor_tabla_trasera)
+        dims = calcular_pieza_trasera(
+            anchura,
+            altura,
+            grosor_tabla_trasera,
+            distancia_suelo=distancia_suelo if es_inferior else 0,
+        )
         piezas.append(
             {
                 "pieza": "Trasera",
@@ -551,8 +564,6 @@ def calcular_despiece(
         )
 
         # --- Costados (2 por módulo) ---
-        # Los módulos inferiores (nombre empieza por "1") llegan al suelo
-        es_inferior = nombre.startswith("1")
         dims = calcular_pieza_costado(
             altura,
             profundidad,
