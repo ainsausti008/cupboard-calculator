@@ -6,7 +6,7 @@
 
   <div class="form-row">
     <div class="form-group">
-      <label for="distanciaTecho">Distancia al techo (mm)</label>
+      <label for="distanciaTecho">Distancia al techo <br> (mm)</label>
       <input
         id="distanciaTecho"
         type="number"
@@ -16,7 +16,7 @@
     </div>
 
     <div class="form-group">
-      <label for="distanciaSuelo">Distancia al suelo (mm)</label>
+      <label for="distanciaSuelo">Distancia al suelo <br> (mm)</label>
       <input
         id="distanciaSuelo"
         type="number"
@@ -26,7 +26,7 @@
     </div>
 
     <div class="form-group">
-      <label for="distanciaFondo">Distancia al fondo (mm)</label>
+      <label for="distanciaFondo">Distancia al fondo <br> (mm)</label>
       <input
         id="distanciaFondo"
         type="number"
@@ -36,12 +36,22 @@
     </div>
 
     <div class="form-group">
-      <label for="distanciaEsquina">Distancia a la esquina (mm)</label>
+      <label for="distanciaEsquinaConPared">Distancia a la esquina con pared (mm)</label>
       <input
-        id="distanciaEsquina"
+        id="distanciaEsquinaConPared"
         type="number"
-        [(ngModel)]="estudio.constantes.distanciaEsquina"
+        [(ngModel)]="estudio.constantes.distanciaEsquinaConPared"
         placeholder="40"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="distanciaEsquinaSinPared">Distancia a la esquina sin pared (mm)</label>
+      <input
+        id="distanciaEsquinaSinPared"
+        type="number"
+        [(ngModel)]="estudio.constantes.distanciaEsquinaSinPared"
+        placeholder="19"
       />
     </div>
   </div>
@@ -114,7 +124,7 @@
     </div>
 
     <div class="form-group">
-      <label for="grosorPuerta">Grosor de la puerta (mm)</label>
+      <label for="grosorPuerta">Grosor de la puerta <br> (mm)</label>
       <input
         id="grosorPuerta"
         type="number"

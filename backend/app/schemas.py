@@ -12,7 +12,8 @@ class DimensionesEstructuraRequest(BaseModel):
     distancia_techo: float
     distancia_suelo: float
     distancia_fondo: float
-    distancia_esquina: float
+    distancia_esquina_con_pared: float
+    distancia_esquina_sin_pared: float
     pared_izquierda: bool
     pared_derecha: bool
     grosor_puerta: float

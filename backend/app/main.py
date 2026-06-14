@@ -57,7 +57,8 @@ async def calcular_dimensiones_estructura(
     return DimensionesEstructuraResponse(
         anchura_estructura=calcular_anchura_estructura(
             anchura_espacio=datos.anchura_espacio,
-            distancia_esquina=datos.distancia_esquina,
+            distancia_esquina_con_pared=datos.distancia_esquina_con_pared,
+            distancia_esquina_sin_pared=datos.distancia_esquina_sin_pared,
             pared_izquierda=datos.pared_izquierda,
             pared_derecha=datos.pared_derecha,
         ),

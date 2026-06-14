@@ -40,7 +40,8 @@ export interface EstudioData {
     distanciaTecho: number;
     distanciaSuelo: number;
     distanciaFondo: number;
-    distanciaEsquina: number;
+    distanciaEsquinaConPared: number;
+    distanciaEsquinaSinPared: number;
     grosorTabla: number;
     grosorTablaTrasera: number;
     holguraPuertaEsquina: number;
@@ -110,7 +111,8 @@ export function crearEstudioVacio(): EstudioData {
       distanciaTecho: 50,
       distanciaSuelo: 64,
       distanciaFondo: 70,
-      distanciaEsquina: 40,
+      distanciaEsquinaConPared: 40,
+      distanciaEsquinaSinPared: 19,
       grosorTabla: 19,
       grosorTablaTrasera: 10,
       holguraPuertaEsquina: 3,

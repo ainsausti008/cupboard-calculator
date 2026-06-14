@@ -11,13 +11,13 @@
       <li>
         Anchura estructura: {{ estudio.dimensiones.anchura_estructura }} mm
         <small class="nota-formula" *ngIf="estudio.caracteristicas.paredEsquinaIzquierda && estudio.caracteristicas.paredEsquinaDerecha">
-          ({{ estudio.dimensiones.anchura }} − 2 × {{ estudio.constantes.distanciaEsquina }})
+          ({{ estudio.dimensiones.anchura }} − 2 × {{ estudio.constantes.distanciaEsquinaConPared }})
         </small>
         <small class="nota-formula" *ngIf="estudio.caracteristicas.paredEsquinaIzquierda !== estudio.caracteristicas.paredEsquinaDerecha">
-          ({{ estudio.dimensiones.anchura }} − {{ estudio.constantes.distanciaEsquina }})
+          ({{ estudio.dimensiones.anchura }} − {{ estudio.constantes.distanciaEsquinaConPared }} − {{ estudio.constantes.distanciaEsquinaSinPared }})
         </small>
         <small class="nota-formula" *ngIf="!estudio.caracteristicas.paredEsquinaIzquierda && !estudio.caracteristicas.paredEsquinaDerecha">
-          ({{ estudio.dimensiones.anchura }})
+          ({{ estudio.dimensiones.anchura }} − 2 × {{ estudio.constantes.distanciaEsquinaSinPared }})
         </small>
       </li>
       <li>

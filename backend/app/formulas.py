@@ -8,18 +8,24 @@ en distintas partes de la aplicación.
 
 def calcular_anchura_estructura(
     anchura_espacio: float,
-    distancia_esquina: float,
+    distancia_esquina_con_pared: float,
+    distancia_esquina_sin_pared: float,
     pared_izquierda: bool,
     pared_derecha: bool,
 ) -> float:
     """Calcula la anchura de la estructura del armario.
 
-    - Con ambas paredes: se descuentan dos distancias de esquina.
-    - Con una sola pared: se descuenta una distancia de esquina.
-    - Sin paredes: la anchura coincide con la del espacio.
+    Siempre se descuenta en cada lado:
+    - distancia_esquina_con_pared (40 mm) si hay pared.
+    - distancia_esquina_sin_pared (19 mm) si no hay pared (irá un remate).
     """
-    paredes = int(pared_izquierda) + int(pared_derecha)
-    return anchura_espacio - paredes * distancia_esquina
+    descuento_izq = (
+        distancia_esquina_con_pared if pared_izquierda else distancia_esquina_sin_pared
+    )
+    descuento_der = (
+        distancia_esquina_con_pared if pared_derecha else distancia_esquina_sin_pared
+    )
+    return anchura_espacio - descuento_izq - descuento_der
 
 
 def calcular_altura_estructura(
