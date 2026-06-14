@@ -69,6 +69,7 @@ async def calcular_dimensiones_estructura(
         profundidad_estructura=calcular_profundidad_estructura(
             profundidad_espacio=datos.profundidad_espacio,
             distancia_fondo=datos.distancia_fondo,
+            grosor_puerta=datos.grosor_puerta,
         ),
     )
 

@@ -47,6 +47,7 @@ export interface EstudioData {
     holguraPuertaContigua: number;
     anchuraMaximaPuerta: number;
     anchuraMinimaPuerta: number;
+    grosorPuerta: number;
     diferenciaProfundidadBaldaModulo: number;
     diferenciaProfundidadBaldaVerticalHorizontal: number;
   };
@@ -116,6 +117,7 @@ export function crearEstudioVacio(): EstudioData {
       holguraPuertaContigua: 3,
       anchuraMaximaPuerta: 530,
       anchuraMinimaPuerta: 265,
+      grosorPuerta: 19,
       diferenciaProfundidadBaldaModulo: 1,
       diferenciaProfundidadBaldaVerticalHorizontal: 1,
     },

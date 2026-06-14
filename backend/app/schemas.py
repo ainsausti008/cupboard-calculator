@@ -15,6 +15,7 @@ class DimensionesEstructuraRequest(BaseModel):
     distancia_esquina: float
     pared_izquierda: bool
     pared_derecha: bool
+    grosor_puerta: float
 
 
 class DimensionesEstructuraResponse(BaseModel):

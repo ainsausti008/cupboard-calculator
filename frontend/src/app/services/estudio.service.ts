@@ -85,6 +85,7 @@ export class EstudioService {
       distancia_suelo: this.estudio.constantes.distanciaSuelo,
       distancia_fondo: this.estudio.constantes.distanciaFondo,
       distancia_esquina: this.estudio.constantes.distanciaEsquina,
+      grosor_puerta: this.estudio.constantes.grosorPuerta,
       pared_izquierda: this.estudio.caracteristicas.paredEsquinaIzquierda,
       pared_derecha: this.estudio.caracteristicas.paredEsquinaDerecha,
     };

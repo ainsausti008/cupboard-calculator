@@ -37,12 +37,13 @@ def calcular_altura_estructura(
 def calcular_profundidad_estructura(
     profundidad_espacio: float,
     distancia_fondo: float,
+    grosor_puerta: float,
 ) -> float:
     """Calcula la profundidad de la estructura del armario.
 
-    Se descuenta la distancia al fondo.
+    Se descuentan la distancia al fondo y el grosor de la puerta.
     """
-    return profundidad_espacio - distancia_fondo
+    return profundidad_espacio - distancia_fondo - grosor_puerta
 
 
 # ---------------------------------------------------------------------------
