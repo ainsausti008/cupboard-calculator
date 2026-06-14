@@ -23,7 +23,7 @@
       <li>
         Altura estructura: {{ estudio.dimensiones.altura_estructura }} mm
         <small class="nota-formula">
-          ({{ estudio.dimensiones.altura }} − {{ estudio.constantes.distanciaTecho }} − {{ estudio.constantes.distanciaSuelo }})
+          ({{ estudio.dimensiones.altura }} − {{ estudio.constantes.distanciaTecho }})
         </small>
       </li>
       <li>
@@ -62,7 +62,7 @@
       <small class="nota-formula">Sugerencia basada en altura de estructura ({{ estudio.dimensiones.altura_estructura }} mm)</small>
     </div>
     <div *ngIf="!cargandoVerticales && !error && modulosVerticalesSeleccionados == 2" class="form-group">
-      <label for="alturaModulo1">Altura del módulo 1 — inferior (mm)</label>
+      <label for="alturaModulo1">Altura de los módulos inferiores (mm) (tener el cuenta que el primer módulo tiene la base a una distancia de {{ estudio.constantes.distanciaSuelo }} mm del suelo)</label>
       <input
         id="alturaModulo1"
         type="number"
@@ -72,7 +72,7 @@
         [max]="estudio.dimensiones.altura_estructura - 1"
       />
       <small class="nota-formula nota-formula-block">
-        Módulo 2 — altura: {{ estudio.dimensiones.altura_estructura }} − {{ alturaModulo1 }} = {{ estudio.dimensiones.altura_estructura - (alturaModulo1 ?? 0) }} mm
+        Altura de los módulos superiores: {{ estudio.dimensiones.altura_estructura }} − {{ alturaModulo1 }} = {{ estudio.dimensiones.altura_estructura - (alturaModulo1 ?? 0) }} mm
       </small>
     </div>
 

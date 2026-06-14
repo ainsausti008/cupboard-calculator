@@ -82,7 +82,6 @@ export class EstudioService {
       altura_espacio: this.estudio.dimensiones.altura,
       profundidad_espacio: this.estudio.dimensiones.profundidad,
       distancia_techo: this.estudio.constantes.distanciaTecho,
-      distancia_suelo: this.estudio.constantes.distanciaSuelo,
       distancia_fondo: this.estudio.constantes.distanciaFondo,
       distancia_esquina_con_pared: this.estudio.constantes.distanciaEsquinaConPared,
       distancia_esquina_sin_pared: this.estudio.constantes.distanciaEsquinaSinPared,
@@ -183,7 +182,6 @@ export class EstudioService {
       diferencia_profundidad_balda_vertical_horizontal: this.estudio.constantes.diferenciaProfundidadBaldaVerticalHorizontal,
       puertas: this.estudio.definicionModulos.puertas,
       anchura_puerta: this.estudio.definicionModulos.anchuraPuerta,
-      distancia_suelo: this.estudio.constantes.distanciaSuelo,
       altura_estructura: this.estudio.dimensiones.altura_estructura,
     };
 

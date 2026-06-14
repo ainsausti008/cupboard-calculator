@@ -31,13 +31,12 @@ def calcular_anchura_estructura(
 def calcular_altura_estructura(
     altura_espacio: float,
     distancia_techo: float,
-    distancia_suelo: float,
 ) -> float:
     """Calcula la altura de la estructura del armario.
 
-    Se descuentan las distancias al techo y al suelo.
+    Se descuenta la distancia al techo.
     """
-    return altura_espacio - distancia_techo - distancia_suelo
+    return altura_espacio - distancia_techo
 
 
 def calcular_profundidad_estructura(
@@ -251,20 +250,18 @@ def calcular_pieza_trasera(
     anchura_modulo: float,
     altura_modulo: float,
     grosor_tabla_trasera: float,
-    distancia_suelo: float = 0,
 ) -> dict:
     """Calcula las dimensiones de la tabla trasera de un módulo.
 
     La trasera se superpone a los costados y a las bases, por lo que su
     anchura coincide con la del módulo completo.
 
-    Para los módulos inferiores (que llegan hasta el suelo) se suma la
-    distancia al suelo a la altura de la trasera.
+    La altura de la trasera coincide con la del módulo
 
     Dimensiones:
-        anchura_modulo × (altura_modulo + distancia_suelo) × grosor_tabla_trasera
+        anchura_modulo × (altura_modulo) × grosor_tabla_trasera
     """
-    altura_trasera = altura_modulo + distancia_suelo
+    altura_trasera = altura_modulo
     return {
         "largo": round(anchura_modulo, 2),
         "alto": round(altura_trasera, 2),
@@ -277,20 +274,16 @@ def calcular_pieza_costado(
     profundidad_modulo: float,
     grosor_tabla_trasera: float,
     grosor_tabla: float,
-    distancia_suelo: float = 0,
 ) -> dict:
     """Calcula las dimensiones de una tabla de costado (lateral) de un módulo.
 
     El costado no llega hasta el fondo del módulo porque la trasera
     se apoya sobre él.
 
-    Para los módulos inferiores (que llegan hasta el suelo) se suma la
-    distancia al suelo a la altura del costado.
-
     Dimensiones:
-        (altura_modulo + distancia_suelo) × (profundidad_modulo − grosor_tabla_trasera) × grosor_tabla
+        (altura_modulo) × (profundidad_modulo − grosor_tabla_trasera) × grosor_tabla
     """
-    altura_costado = altura_modulo + distancia_suelo
+    altura_costado = altura_modulo
     profundidad_costado = profundidad_modulo - grosor_tabla_trasera
     return {
         "largo": round(altura_costado, 2),
@@ -467,23 +460,19 @@ def calcular_pieza_puerta(
     anchura_puerta: float,
     altura_estructura: float,
     grosor_tabla: float,
-    distancia_suelo: float,
 ) -> dict:
     """Calcula las dimensiones de una puerta.
 
     La anchura de la puerta ya viene precalculada en la fase de definición
     de módulos. La altura se calcula a partir de la altura de la estructura
-    descontando la distancia al suelo y medio grosor de tabla por arriba
-    y por abajo.
+    descontando medio grosor de tabla por arriba y por abajo.
 
     Dimensiones:
         anchura_puerta
-        × (altura_estructura − distancia_suelo − grosor_tabla / 2 − grosor_tabla / 2)
+        × (altura_estructura − grosor_tabla / 2 − grosor_tabla / 2)
         × grosor_tabla
     """
-    altura_puerta = (
-        altura_estructura - distancia_suelo - grosor_tabla / 2 - grosor_tabla / 2
-    )
+    altura_puerta = altura_estructura - grosor_tabla / 2 - grosor_tabla / 2
     return {
         "largo": round(anchura_puerta, 2),
         "alto": round(altura_puerta, 2),
@@ -500,7 +489,6 @@ def calcular_despiece(
     diferencia_profundidad_balda_vertical_horizontal: float,
     puertas: int,
     anchura_puerta: float,
-    distancia_suelo: float,
     altura_estructura: float,
 ) -> list[dict]:
     """Genera la lista completa de piezas (despiece) del armario.
@@ -508,9 +496,6 @@ def calcular_despiece(
     Para cada módulo se generan las 5 tablas estructurales (trasera,
     2 costados, base inferior, base superior) y las baldas verticales
     y horizontales según la configuración elegida.
-
-    Las traseras y los costados de los módulos inferiores (fila 1, los
-    que llegan al suelo) suman la distancia al suelo en su altura.
 
     Finalmente se añaden las puertas.
 
@@ -533,8 +518,6 @@ def calcular_despiece(
         Número total de puertas.
     anchura_puerta : float
         Anchura de cada puerta (mm).
-    distancia_suelo : float
-        Distancia al suelo / altura de las patas (mm).
     altura_estructura : float
         Altura total de la estructura (mm).
 
@@ -556,20 +539,15 @@ def calcular_despiece(
         altura = modulo["altura"]
         profundidad = modulo["profundidad"]
 
-        # Los módulos inferiores (nombre empieza por "1") llegan al suelo
-        es_inferior = nombre.startswith("1")
-        ds = distancia_suelo if es_inferior else 0
-
         # --- Trasera ---
         dims = calcular_pieza_trasera(
             anchura,
             altura,
             grosor_tabla_trasera,
-            distancia_suelo=ds,
         )
-        # Cálculo: largo = anchura, alto = altura (+ dist_suelo), grosor = grosor_trasera
+        # Cálculo: largo = anchura, alto = altura, grosor = grosor_trasera
         c_largo = _f(anchura)
-        c_alto = f"{_f(altura)} + {_f(ds)}" if ds else _f(altura)
+        c_alto = _f(altura)
         c_grosor = _f(grosor_tabla_trasera)
         piezas.append(
             {
@@ -587,10 +565,9 @@ def calcular_despiece(
             profundidad,
             grosor_tabla_trasera,
             grosor_tabla,
-            distancia_suelo=ds,
         )
-        # Cálculo: largo = altura (+ dist_suelo), alto = prof − grosor_trasera, grosor
-        c_largo = f"{_f(altura)} + {_f(ds)}" if ds else _f(altura)
+        # Cálculo: largo = altura, alto = prof − grosor_trasera, grosor
+        c_largo = _f(altura)
         c_alto = f"{_f(profundidad)} − {_f(grosor_tabla_trasera)}"
         c_grosor = _f(grosor_tabla)
         piezas.append(
@@ -744,12 +721,12 @@ def calcular_despiece(
 
     # --- Puertas ---
     if puertas > 0:
-        dims_p = calcular_pieza_puerta(
-            anchura_puerta, altura_estructura, grosor_tabla, distancia_suelo
-        )
-        # Cálculo: largo = anchura_puerta, alto = alt_estr − dist_suelo − grosor/2 − grosor/2, grosor
+        dims_p = calcular_pieza_puerta(anchura_puerta, altura_estructura, grosor_tabla)
+        # Cálculo: largo = anchura_puerta, alto = alt_estr − grosor/2 − grosor/2, grosor
         c_largo = _f(anchura_puerta)
-        c_alto = f"{_f(altura_estructura)} − {_f(distancia_suelo)} − {_f(grosor_tabla)}/2 − {_f(grosor_tabla)}/2"
+        c_alto = (
+            f"{_f(altura_estructura)} − {_f(grosor_tabla)}/2 − {_f(grosor_tabla)}/2"
+        )
         c_grosor = _f(grosor_tabla)
         piezas.append(
             {

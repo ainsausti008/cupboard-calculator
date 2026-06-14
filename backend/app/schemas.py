@@ -10,7 +10,6 @@ class DimensionesEstructuraRequest(BaseModel):
     altura_espacio: float
     profundidad_espacio: float
     distancia_techo: float
-    distancia_suelo: float
     distancia_fondo: float
     distancia_esquina_con_pared: float
     distancia_esquina_sin_pared: float
@@ -149,7 +148,6 @@ class DespieceRequest(BaseModel):
     diferencia_profundidad_balda_vertical_horizontal: float
     puertas: int
     anchura_puerta: float
-    distancia_suelo: float
     altura_estructura: float
 
 

@@ -54,16 +54,6 @@ export class DespieceComponent implements OnInit {
     return `${baldaModulo.nombreModulo}-${letra}`;
   }
 
-  /** Texto descriptivo de paredes en esquinas */
-  textoParedes(): string {
-    const izq = this.estudio.caracteristicas.paredEsquinaIzquierda;
-    const der = this.estudio.caracteristicas.paredEsquinaDerecha;
-    if (izq && der) return 'Ambos lados';
-    if (izq) return 'Solo esquina izquierda';
-    if (der) return 'Solo esquina derecha';
-    return 'Ninguna';
-  }
-
   /** Formatea las dimensiones de una pieza como texto */
   formatoDimensiones(pieza: PiezaDespiece): string {
     return `${pieza.largo} × ${pieza.alto} × ${pieza.grosor} mm`;
