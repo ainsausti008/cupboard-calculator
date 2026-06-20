@@ -307,6 +307,7 @@ def calcular_pieza_base(
     profundidad_modulo: float,
     grosor_tabla_trasera: float,
     grosor_tabla: float,
+    ajuste_profundidad_mm: float = 0,
 ) -> dict:
     """Calcula las dimensiones de una tabla de base (inferior o superior).
 
@@ -314,11 +315,16 @@ def calcular_pieza_base(
     grosor de ambos laterales de la anchura. La profundidad se reduce
     por la trasera.
 
+    Cuando procede (encaje entre módulo inferior/superior), se puede
+    aplicar un ajuste adicional en la profundidad.
+
     Dimensiones:
-        (anchura_modulo − 2 × grosor_tabla) × (profundidad_modulo − grosor_tabla_trasera) × grosor_tabla
+        (anchura_modulo − 2 × grosor_tabla)
+        × (profundidad_modulo − grosor_tabla_trasera − ajuste_profundidad_mm)
+        × grosor_tabla
     """
     anchura_base = anchura_modulo - 2 * grosor_tabla
-    profundidad_base = profundidad_modulo - grosor_tabla_trasera
+    profundidad_base = profundidad_modulo - grosor_tabla_trasera - ajuste_profundidad_mm
     return {
         "largo": round(anchura_base, 2),
         "alto": round(profundidad_base, 2),
@@ -542,12 +548,22 @@ def calcular_despiece(
         return f"{n:g}"
 
     piezas: list[dict] = []
+    nombres_modulos = {m["nombre"] for m in modulos}
 
     for modulo in modulos:
         nombre = modulo["nombre"]
         anchura = modulo["anchura"]
         altura = modulo["altura"]
         profundidad = modulo["profundidad"]
+
+        # Ajuste entre módulos apilados:
+        # - El techo del módulo inferior reduce 1 mm si existe su superior.
+        # - La base del módulo superior reduce 1 mm si existe su inferior.
+        nombre_txt = str(nombre)
+        nombre_superior = f"{nombre_txt[:-1]}S" if nombre_txt.endswith("I") else None
+        nombre_inferior = f"{nombre_txt[:-1]}I" if nombre_txt.endswith("S") else None
+        ajuste_base_superior = 1 if nombre_superior in nombres_modulos else 0
+        ajuste_base_inferior = 1 if nombre_inferior in nombres_modulos else 0
 
         # --- Trasera ---
         dims = calcular_pieza_trasera(
@@ -590,33 +606,51 @@ def calcular_despiece(
             }
         )
 
-        # --- Base inferior ---
-        dims = calcular_pieza_base(
-            anchura, profundidad, grosor_tabla_trasera, grosor_tabla
+        # --- Base ---
+        dims_base_inferior = calcular_pieza_base(
+            anchura,
+            profundidad,
+            grosor_tabla_trasera,
+            grosor_tabla,
+            ajuste_profundidad_mm=ajuste_base_inferior,
         )
         # Cálculo: largo = anchura − 2×grosor, alto = prof − grosor_trasera, grosor
         c_largo = f"{_f(anchura)} − 2 × {_f(grosor_tabla)}"
         c_alto = f"{_f(profundidad)} − {_f(grosor_tabla_trasera)}"
+        if ajuste_base_inferior:
+            c_alto = f"{c_alto} − {_f(ajuste_base_inferior)}"
         c_grosor = _f(grosor_tabla)
-        calculo_base = f"({c_largo}, {c_alto}, {c_grosor})"
+        calculo_base_inferior = f"({c_largo}, {c_alto}, {c_grosor})"
         piezas.append(
             {
-                "pieza": "Base inferior",
+                "pieza": "Base",
                 "unidades": 1,
-                **dims,
+                **dims_base_inferior,
                 "modulo": nombre,
-                "calculo": calculo_base,
+                "calculo": calculo_base_inferior,
             }
         )
 
-        # --- Base superior ---
+        # --- Techo ---
+        dims_base_superior = calcular_pieza_base(
+            anchura,
+            profundidad,
+            grosor_tabla_trasera,
+            grosor_tabla,
+            ajuste_profundidad_mm=ajuste_base_superior,
+        )
+        c_largo = f"{_f(anchura)} − 2 × {_f(grosor_tabla)}"
+        c_alto = f"{_f(profundidad)} − {_f(grosor_tabla_trasera)}"
+        if ajuste_base_superior:
+            c_alto = f"{c_alto} − {_f(ajuste_base_superior)}"
+        calculo_base_superior = f"({c_largo}, {c_alto}, {c_grosor})"
         piezas.append(
             {
-                "pieza": "Base superior",
+                "pieza": "Techo",
                 "unidades": 1,
-                **dims,
+                **dims_base_superior,
                 "modulo": nombre,
-                "calculo": calculo_base,
+                "calculo": calculo_base_superior,
             }
         )
 
