@@ -11,7 +11,7 @@ export interface SubmoduloBalda {
 }
 
 export interface BaldaModulo {
-  /** Nombre del módulo tal como fue definido (e.g. "1I", "2D") */
+  /** Nombre del módulo tal como fue definido (e.g. "1I", "2S") */
   nombreModulo: string;
   /** Número de baldas verticales (0 = sin divisiones verticales) */
   baldasVerticales: number;

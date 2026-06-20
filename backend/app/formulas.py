@@ -148,10 +148,12 @@ def _anchuras_modulos_3puertas(
     holgura_puerta_esquina: float,
     holgura_puerta_contigua: float,
 ) -> tuple[float, float]:
-    """2 módulos horizontales con 3 puertas (I es el pequeño, D el grande).
+    """2 módulos horizontales con 3 puertas.
 
-    modulo I = anchura_puerta + holgura_esquina + holgura_contigua / 2
-    modulo D = anchura_puerta × 2 + holgura_esquina + holgura_contigua + holgura_contigua / 2
+    El módulo izquierdo (1) es el pequeño y el derecho (2) el grande.
+
+    modulo 1 = anchura_puerta + holgura_esquina + holgura_contigua / 2
+    modulo 2 = anchura_puerta × 2 + holgura_esquina + holgura_contigua + holgura_contigua / 2
     """
     anch_i = anchura_puerta + holgura_puerta_esquina + holgura_puerta_contigua / 2
     anch_d = (
@@ -193,7 +195,13 @@ def calcular_modulos_definidos(
     holgura_puerta_contigua: float,
     altura_modulo1: float | None = None,
 ) -> list[dict]:
-    """Genera la lista de módulos con nombre y dimensiones."""
+    """Genera la lista de módulos con nombre y dimensiones.
+
+    Nomenclatura:
+    - El número indica posición horizontal de izquierda a derecha (1, 2).
+    - La letra indica posición vertical: I (inferior) o S (superior).
+    - Ejemplo 2x2: 1I, 2I, 1S, 2S.
+    """
 
     # --- Anchuras horizontales ---
     if modulos_horizontales == 1:
@@ -222,13 +230,15 @@ def calcular_modulos_definidos(
         alturas_v = [alt1, alt2]
 
     # --- Nomenclatura y combinación ---
-    etiquetas_h = [""] if modulos_horizontales == 1 else ["I", "D"]
-    etiquetas_v = ["1"] if modulos_verticales == 1 else ["1", "2"]
+    # Número: izquierda -> derecha
+    etiquetas_h = ["1"] if modulos_horizontales == 1 else ["1", "2"]
+    # Letra: inferior/superior
+    etiquetas_v = ["I"] if modulos_verticales == 1 else ["I", "S"]
 
     modulos: list[dict] = []
     for iv, etiq_v in enumerate(etiquetas_v):
         for ih, etiq_h in enumerate(etiquetas_h):
-            nombre = f"{etiq_v}{etiq_h}" if etiq_h else etiq_v
+            nombre = f"{etiq_h}{etiq_v}"
             modulos.append(
                 {
                     "nombre": nombre,

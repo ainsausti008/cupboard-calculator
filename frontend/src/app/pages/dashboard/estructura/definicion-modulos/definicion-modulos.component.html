@@ -99,7 +99,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let m of modulosDefinidos">
-            <td class="nombre-modulo">{{ m.nombre }}</td>
+            <td class="nombre-modulo">{{ nombreModuloCompleto(m.nombre) }}</td>
             <td>{{ m.anchura }}</td>
             <td>{{ m.altura }}</td>
             <td>{{ m.profundidad }}</td>
