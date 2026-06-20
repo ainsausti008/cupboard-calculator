@@ -72,6 +72,8 @@
         [max]="estudio.dimensiones.altura_estructura - 1"
       />
       <small class="nota-formula nota-formula-block">
+        Altura de los módulos inferiores sin la distancia al suelo: {{ alturaModulo1 }} − {{ estudio.constantes.distanciaSuelo }} = {{ (alturaModulo1 ?? 0) - estudio.constantes.distanciaSuelo }} mm
+        <br>
         Altura de los módulos superiores: {{ estudio.dimensiones.altura_estructura }} − {{ alturaModulo1 }} = {{ estudio.dimensiones.altura_estructura - (alturaModulo1 ?? 0) }} mm
       </small>
     </div>
