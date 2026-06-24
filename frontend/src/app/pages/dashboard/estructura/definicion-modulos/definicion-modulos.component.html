@@ -11,25 +11,25 @@
       <li>
         Anchura estructura: {{ estudio.dimensiones.anchura_estructura }} mm
         <small class="nota-formula" *ngIf="estudio.caracteristicas.paredEsquinaIzquierda && estudio.caracteristicas.paredEsquinaDerecha">
-          ({{ estudio.dimensiones.anchura }} − 2 × {{ estudio.constantes.distanciaEsquina }})
+          ({{ estudio.dimensiones.anchura }} − 2 × {{ estudio.constantes.distanciaEsquinaConPared }})
         </small>
         <small class="nota-formula" *ngIf="estudio.caracteristicas.paredEsquinaIzquierda !== estudio.caracteristicas.paredEsquinaDerecha">
-          ({{ estudio.dimensiones.anchura }} − {{ estudio.constantes.distanciaEsquina }})
+          ({{ estudio.dimensiones.anchura }} − {{ estudio.constantes.distanciaEsquinaConPared }} − {{ estudio.constantes.distanciaEsquinaSinPared }})
         </small>
         <small class="nota-formula" *ngIf="!estudio.caracteristicas.paredEsquinaIzquierda && !estudio.caracteristicas.paredEsquinaDerecha">
-          ({{ estudio.dimensiones.anchura }})
+          ({{ estudio.dimensiones.anchura }} − 2 × {{ estudio.constantes.distanciaEsquinaSinPared }})
         </small>
       </li>
       <li>
         Altura estructura: {{ estudio.dimensiones.altura_estructura }} mm
         <small class="nota-formula">
-          ({{ estudio.dimensiones.altura }} − {{ estudio.constantes.distanciaTecho }} − {{ estudio.constantes.distanciaSuelo }})
+          ({{ estudio.dimensiones.altura }} − {{ estudio.constantes.distanciaTecho }})
         </small>
       </li>
       <li>
         Profundidad estructura: {{ estudio.dimensiones.profundidad_estructura }} mm
         <small class="nota-formula">
-          ({{ estudio.dimensiones.profundidad }} − {{ estudio.constantes.distanciaFondo }})
+          ({{ estudio.dimensiones.profundidad }} − {{ estudio.constantes.distanciaFondo }} − {{ estudio.constantes.grosorPuerta }})
         </small>
       </li>
     </ul>
@@ -40,7 +40,7 @@
       <select id="opcionModulo" (change)="seleccionarOpcion($any($event.target).selectedIndex - 1)">
         <option value="" disabled [selected]="!opcionSeleccionada">-- Elige una opción --</option>
         <option *ngFor="let opcion of opcionesModulos">
-          {{ opcion.modulos }} módulo{{ opcion.modulos > 1 ? 's' : '' }} con {{ opcion.puertas }} puertas — anchura puerta: {{ opcion.anchura_puerta }} mm
+          {{ opcion.modulos }} módulo{{ opcion.modulos > 1 ? 's' : '' }} con {{ opcion.puertas }} puertas{{ opcion.puertas === 3 ? (opcion.modulo_grande_izquierda ? ' (módulo ancho a la izquierda)' : ' (módulo ancho a la derecha)') : '' }} — anchura puerta: {{ opcion.anchura_puerta }} mm
         </option>
       </select>
       <small *ngIf="opcionSeleccionada" class="nota-formula nota-formula-block">
@@ -62,7 +62,7 @@
       <small class="nota-formula">Sugerencia basada en altura de estructura ({{ estudio.dimensiones.altura_estructura }} mm)</small>
     </div>
     <div *ngIf="!cargandoVerticales && !error && modulosVerticalesSeleccionados == 2" class="form-group">
-      <label for="alturaModulo1">Altura del módulo 1 — inferior (mm)</label>
+      <label for="alturaModulo1">Altura de los módulos inferiores (mm) (tener el cuenta que el primer módulo tiene la base a una distancia de {{ estudio.constantes.distanciaSuelo }} mm del suelo)</label>
       <input
         id="alturaModulo1"
         type="number"
@@ -72,7 +72,9 @@
         [max]="estudio.dimensiones.altura_estructura - 1"
       />
       <small class="nota-formula nota-formula-block">
-        Módulo 2 — altura: {{ estudio.dimensiones.altura_estructura }} − {{ alturaModulo1 }} = {{ estudio.dimensiones.altura_estructura - (alturaModulo1 ?? 0) }} mm
+        Altura de los módulos inferiores sin la distancia al suelo: {{ alturaModulo1 }} − {{ estudio.constantes.distanciaSuelo }} = {{ (alturaModulo1 ?? 0) - estudio.constantes.distanciaSuelo }} mm
+        <br>
+        Altura de los módulos superiores: {{ estudio.dimensiones.altura_estructura }} − {{ alturaModulo1 }} = {{ estudio.dimensiones.altura_estructura - (alturaModulo1 ?? 0) }} mm
       </small>
     </div>
 
@@ -97,7 +99,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let m of modulosDefinidos">
-            <td class="nombre-modulo">{{ m.nombre }}</td>
+            <td class="nombre-modulo">{{ nombreModuloCompleto(m.nombre) }}</td>
             <td>{{ m.anchura }}</td>
             <td>{{ m.altura }}</td>
             <td>{{ m.profundidad }}</td>

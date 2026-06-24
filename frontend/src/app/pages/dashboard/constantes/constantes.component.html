@@ -6,42 +6,57 @@
 
   <div class="form-row">
     <div class="form-group">
-      <label for="distanciaTecho">Distancia al techo (mm)</label>
+      <label for="distanciaTecho">Distancia al techo <br> (mm)</label>
       <input
         id="distanciaTecho"
         type="number"
         [(ngModel)]="estudio.constantes.distanciaTecho"
         placeholder="50"
+        (change)="onCambioConstante()"
       />
     </div>
 
     <div class="form-group">
-      <label for="distanciaSuelo">Distancia al suelo (mm)</label>
+      <label for="distanciaSuelo">Distancia al suelo <br> (mm)</label>
       <input
         id="distanciaSuelo"
         type="number"
         [(ngModel)]="estudio.constantes.distanciaSuelo"
         placeholder="64"
+        (change)="onCambioConstante()"
       />
     </div>
 
     <div class="form-group">
-      <label for="distanciaFondo">Distancia al fondo (mm)</label>
+      <label for="distanciaFondo">Distancia al fondo <br> (mm)</label>
       <input
         id="distanciaFondo"
         type="number"
         [(ngModel)]="estudio.constantes.distanciaFondo"
         placeholder="70"
+        (change)="onCambioConstante()"
       />
     </div>
 
     <div class="form-group">
-      <label for="distanciaEsquina">Distancia a la esquina (mm)</label>
+      <label for="distanciaEsquinaConPared">Distancia a la esquina con pared (mm)</label>
       <input
-        id="distanciaEsquina"
+        id="distanciaEsquinaConPared"
         type="number"
-        [(ngModel)]="estudio.constantes.distanciaEsquina"
+        [(ngModel)]="estudio.constantes.distanciaEsquinaConPared"
         placeholder="40"
+        (change)="onCambioConstante()"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="distanciaEsquinaSinPared">Distancia a la esquina sin pared (mm)</label>
+      <input
+        id="distanciaEsquinaSinPared"
+        type="number"
+        [(ngModel)]="estudio.constantes.distanciaEsquinaSinPared"
+        placeholder="19"
+        (change)="onCambioConstante()"
       />
     </div>
   </div>
@@ -56,6 +71,7 @@
         type="number"
         [(ngModel)]="estudio.constantes.grosorTabla"
         placeholder="19"
+        (change)="onCambioConstante()"
       />
     </div>
 
@@ -66,6 +82,7 @@
         type="number"
         [(ngModel)]="estudio.constantes.grosorTablaTrasera"
         placeholder="10"
+        (change)="onCambioConstante()"
       />
     </div>
   </div>
@@ -80,6 +97,7 @@
         type="number"
         [(ngModel)]="estudio.constantes.holguraPuertaEsquina"
         placeholder="3"
+        (change)="onCambioConstante()"
       />
     </div>
 
@@ -90,6 +108,7 @@
         type="number"
         [(ngModel)]="estudio.constantes.holguraPuertaContigua"
         placeholder="3"
+        (change)="onCambioConstante()"
       />
     </div>
 
@@ -100,6 +119,7 @@
         type="number"
         [(ngModel)]="estudio.constantes.anchuraMaximaPuerta"
         placeholder="530"
+        (change)="onCambioConstante()"
       />
     </div>
 
@@ -110,6 +130,18 @@
         type="number"
         [(ngModel)]="estudio.constantes.anchuraMinimaPuerta"
         placeholder="265"
+        (change)="onCambioConstante()"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="grosorPuerta">Grosor de la puerta <br> (mm)</label>
+      <input
+        id="grosorPuerta"
+        type="number"
+        [(ngModel)]="estudio.constantes.grosorPuerta"
+        placeholder="19"
+        (change)="onCambioConstante()"
       />
     </div>
   </div>
@@ -124,6 +156,7 @@
         type="number"
         [(ngModel)]="estudio.constantes.diferenciaProfundidadBaldaModulo"
         placeholder="1"
+        (change)="onCambioConstante()"
       />
     </div>
 
@@ -134,6 +167,7 @@
         type="number"
         [(ngModel)]="estudio.constantes.diferenciaProfundidadBaldaVerticalHorizontal"
         placeholder="1"
+        (change)="onCambioConstante()"
       />
     </div>
   </div>

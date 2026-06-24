@@ -30,6 +30,7 @@
         id="altura"
         type="number"
         [(ngModel)]="estudio.dimensiones.altura"
+        (change)="onCambioEstructura()"
       />
     </div>
 
@@ -39,6 +40,7 @@
         id="anchura"
         type="number"
         [(ngModel)]="estudio.dimensiones.anchura"
+        (change)="onCambioEstructura()"
       />
     </div>
 
@@ -48,6 +50,7 @@
         id="profundidad"
         type="number"
         [(ngModel)]="estudio.dimensiones.profundidad"
+        (change)="onCambioEstructura()"
       />
     </div>
   </div>
@@ -59,8 +62,8 @@
         <span class="info-tooltip" title="Si se indica que sí, hay una pieza más y un remate menos">ℹ</span>
       </span>
       <div class="radio-group">
-        <label><input type="radio" name="paredIzq" [value]="true" [(ngModel)]="estudio.caracteristicas.paredEsquinaIzquierda" /> Sí</label>
-        <label><input type="radio" name="paredIzq" [value]="false" [(ngModel)]="estudio.caracteristicas.paredEsquinaIzquierda" /> No</label>
+        <label><input type="radio" name="paredIzq" [value]="true" [(ngModel)]="estudio.caracteristicas.paredEsquinaIzquierda" (change)="onCambioEstructura()" /> Sí</label>
+        <label><input type="radio" name="paredIzq" [value]="false" [(ngModel)]="estudio.caracteristicas.paredEsquinaIzquierda" (change)="onCambioEstructura()" /> No</label>
       </div>
     </div>
 
@@ -70,8 +73,8 @@
         <span class="info-tooltip" title="Si se indica que sí, hay una pieza más y un remate menos">ℹ</span>
       </span>
       <div class="radio-group">
-        <label><input type="radio" name="paredDer" [value]="true" [(ngModel)]="estudio.caracteristicas.paredEsquinaDerecha" /> Sí</label>
-        <label><input type="radio" name="paredDer" [value]="false" [(ngModel)]="estudio.caracteristicas.paredEsquinaDerecha" /> No</label>
+        <label><input type="radio" name="paredDer" [value]="true" [(ngModel)]="estudio.caracteristicas.paredEsquinaDerecha" (change)="onCambioEstructura()" /> Sí</label>
+        <label><input type="radio" name="paredDer" [value]="false" [(ngModel)]="estudio.caracteristicas.paredEsquinaDerecha" (change)="onCambioEstructura()" /> No</label>
       </div>
     </div>
   </div>

@@ -57,18 +57,19 @@ async def calcular_dimensiones_estructura(
     return DimensionesEstructuraResponse(
         anchura_estructura=calcular_anchura_estructura(
             anchura_espacio=datos.anchura_espacio,
-            distancia_esquina=datos.distancia_esquina,
+            distancia_esquina_con_pared=datos.distancia_esquina_con_pared,
+            distancia_esquina_sin_pared=datos.distancia_esquina_sin_pared,
             pared_izquierda=datos.pared_izquierda,
             pared_derecha=datos.pared_derecha,
         ),
         altura_estructura=calcular_altura_estructura(
             altura_espacio=datos.altura_espacio,
             distancia_techo=datos.distancia_techo,
-            distancia_suelo=datos.distancia_suelo,
         ),
         profundidad_estructura=calcular_profundidad_estructura(
             profundidad_espacio=datos.profundidad_espacio,
             distancia_fondo=datos.distancia_fondo,
+            grosor_puerta=datos.grosor_puerta,
         ),
     )
 
@@ -124,6 +125,7 @@ async def calcular_modulos_definidos_endpoint(
         holgura_puerta_esquina=datos.holgura_puerta_esquina,
         holgura_puerta_contigua=datos.holgura_puerta_contigua,
         altura_modulo1=datos.altura_modulo1,
+        modulo_grande_izquierda=datos.modulo_grande_izquierda,
     )
     return ModulosDefinidosResponse(modulos=modulos)
 
@@ -146,7 +148,6 @@ async def calcular_despiece_endpoint(
         diferencia_profundidad_balda_vertical_horizontal=datos.diferencia_profundidad_balda_vertical_horizontal,
         puertas=datos.puertas,
         anchura_puerta=datos.anchura_puerta,
-        distancia_suelo=datos.distancia_suelo,
         altura_estructura=datos.altura_estructura,
     )
     return DespieceResponse(piezas=piezas)

@@ -14,6 +14,7 @@ export interface OpcionModulo {
   modulos: number;
   puertas: number;
   anchura_puerta: number;
+  modulo_grande_izquierda: boolean;
 }
 
 interface OpcionesModulosResponse {
@@ -63,6 +64,10 @@ export class EstudioService {
     this.estudio = crearEstudioVacio();
   }
 
+  invalidarModulosDefinidos(): void {
+    this.estudio.definicionModulos.modulos = [];
+  }
+
   cargarEstudio(json: string): void {
     const data: EstudioExportado = JSON.parse(json);
     this.estudio = deEstudioExportado(data);
@@ -82,9 +87,10 @@ export class EstudioService {
       altura_espacio: this.estudio.dimensiones.altura,
       profundidad_espacio: this.estudio.dimensiones.profundidad,
       distancia_techo: this.estudio.constantes.distanciaTecho,
-      distancia_suelo: this.estudio.constantes.distanciaSuelo,
       distancia_fondo: this.estudio.constantes.distanciaFondo,
-      distancia_esquina: this.estudio.constantes.distanciaEsquina,
+      distancia_esquina_con_pared: this.estudio.constantes.distanciaEsquinaConPared,
+      distancia_esquina_sin_pared: this.estudio.constantes.distanciaEsquinaSinPared,
+      grosor_puerta: this.estudio.constantes.grosorPuerta,
       pared_izquierda: this.estudio.caracteristicas.paredEsquinaIzquierda,
       pared_derecha: this.estudio.caracteristicas.paredEsquinaDerecha,
     };
@@ -146,6 +152,7 @@ export class EstudioService {
       anchura_puerta: opcion.anchura_puerta,
       holgura_puerta_esquina: this.estudio.constantes.holguraPuertaEsquina,
       holgura_puerta_contigua: this.estudio.constantes.holguraPuertaContigua,
+      modulo_grande_izquierda: opcion.modulo_grande_izquierda,
     };
     if (modulosVerticales === 2 && alturaModulo1 != null) {
       body['altura_modulo1'] = alturaModulo1;
@@ -181,7 +188,6 @@ export class EstudioService {
       diferencia_profundidad_balda_vertical_horizontal: this.estudio.constantes.diferenciaProfundidadBaldaVerticalHorizontal,
       puertas: this.estudio.definicionModulos.puertas,
       anchura_puerta: this.estudio.definicionModulos.anchuraPuerta,
-      distancia_suelo: this.estudio.constantes.distanciaSuelo,
       altura_estructura: this.estudio.dimensiones.altura_estructura,
     };
 

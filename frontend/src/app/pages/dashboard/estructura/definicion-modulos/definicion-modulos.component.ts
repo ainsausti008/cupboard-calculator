@@ -172,4 +172,16 @@ export class DefinicionModulosComponent implements OnInit {
     // Restaurar módulos calculados
     this.modulosDefinidos = def.modulos;
   }
+
+  /** Devuelve el nombre completo legible de un módulo (p. ej. "Izquierda Inferior (1I)") */
+  nombreModuloCompleto(nombre: string): string {
+    const map: Record<string, string> = {
+      '1I': 'Izquierda Inferior',
+      '2I': 'Derecha Inferior',
+      '1S': 'Izquierda Superior',
+      '2S': 'Derecha Superior',
+    };
+    const texto = map[nombre] ?? nombre;
+    return `${texto} (${nombre})`;
+  }
 }

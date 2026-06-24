@@ -75,8 +75,6 @@
             </span>
           </div>
           <div class="dato-row dato-resumen">
-            <span class="dato-label">Resumen</span>
-            <span class="dato-valor">{{ textoParedes() }}</span>
           </div>
         </div>
       </div>
@@ -207,6 +205,7 @@
               <th>Pieza</th>
               <th class="col-unidades">Unidades</th>
               <th>Dimensiones</th>
+              <th>Dimensiones redondeadas</th>
             </tr>
           </thead>
           <tbody>
@@ -214,6 +213,7 @@
               <td class="celda-pieza">{{ pieza.pieza }}</td>
               <td class="celda-unidades">{{ pieza.unidades }}</td>
               <td class="celda-dimensiones">{{ formatoDimensionesAgregada(pieza) }}</td>
+              <td class="celda-dimensiones">{{ formatoDimensionesRedondeadas(pieza) }}</td>
             </tr>
           </tbody>
         </table>

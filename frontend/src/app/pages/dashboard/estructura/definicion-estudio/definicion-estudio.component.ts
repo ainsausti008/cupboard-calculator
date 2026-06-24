@@ -24,4 +24,8 @@ export class DefinicionEstudioComponent implements OnInit {
       this.estudio.dimensiones.profundidad > 0
     );
   }
+
+  onCambioEstructura(): void {
+    this.estudioService.invalidarModulosDefinidos();
+  }
 }

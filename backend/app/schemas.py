@@ -10,11 +10,12 @@ class DimensionesEstructuraRequest(BaseModel):
     altura_espacio: float
     profundidad_espacio: float
     distancia_techo: float
-    distancia_suelo: float
     distancia_fondo: float
-    distancia_esquina: float
+    distancia_esquina_con_pared: float
+    distancia_esquina_sin_pared: float
     pared_izquierda: bool
     pared_derecha: bool
+    grosor_puerta: float
 
 
 class DimensionesEstructuraResponse(BaseModel):
@@ -46,6 +47,7 @@ class OpcionModulo(BaseModel):
     modulos: int
     puertas: int
     anchura_puerta: float
+    modulo_grande_izquierda: bool = False
 
 
 class OpcionesModulosResponse(BaseModel):
@@ -90,6 +92,7 @@ class ModulosDefinidosRequest(BaseModel):
     holgura_puerta_esquina: float
     holgura_puerta_contigua: float
     altura_modulo1: float | None = None
+    modulo_grande_izquierda: bool = False
 
 
 class ModuloDefinido(BaseModel):
@@ -147,7 +150,6 @@ class DespieceRequest(BaseModel):
     diferencia_profundidad_balda_vertical_horizontal: float
     puertas: int
     anchura_puerta: float
-    distancia_suelo: float
     altura_estructura: float
 
 

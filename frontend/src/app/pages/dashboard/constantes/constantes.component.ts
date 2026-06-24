@@ -15,4 +15,8 @@ export class ConstantesComponent implements OnInit {
   ngOnInit(): void {
     this.estudio = this.estudioService.obtenerEstudio();
   }
+
+  onCambioConstante(): void {
+    this.estudioService.invalidarModulosDefinidos();
+  }
 }

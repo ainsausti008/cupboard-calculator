@@ -11,7 +11,7 @@ export interface SubmoduloBalda {
 }
 
 export interface BaldaModulo {
-  /** Nombre del módulo tal como fue definido (e.g. "1I", "2D") */
+  /** Nombre del módulo tal como fue definido (e.g. "1I", "2S") */
   nombreModulo: string;
   /** Número de baldas verticales (0 = sin divisiones verticales) */
   baldasVerticales: number;
@@ -40,13 +40,15 @@ export interface EstudioData {
     distanciaTecho: number;
     distanciaSuelo: number;
     distanciaFondo: number;
-    distanciaEsquina: number;
+    distanciaEsquinaConPared: number;
+    distanciaEsquinaSinPared: number;
     grosorTabla: number;
     grosorTablaTrasera: number;
     holguraPuertaEsquina: number;
     holguraPuertaContigua: number;
     anchuraMaximaPuerta: number;
     anchuraMinimaPuerta: number;
+    grosorPuerta: number;
     diferenciaProfundidadBaldaModulo: number;
     diferenciaProfundidadBaldaVerticalHorizontal: number;
   };
@@ -109,13 +111,15 @@ export function crearEstudioVacio(): EstudioData {
       distanciaTecho: 50,
       distanciaSuelo: 64,
       distanciaFondo: 70,
-      distanciaEsquina: 40,
+      distanciaEsquinaConPared: 40,
+      distanciaEsquinaSinPared: 19,
       grosorTabla: 19,
       grosorTablaTrasera: 10,
       holguraPuertaEsquina: 3,
       holguraPuertaContigua: 3,
       anchuraMaximaPuerta: 530,
       anchuraMinimaPuerta: 265,
+      grosorPuerta: 19,
       diferenciaProfundidadBaldaModulo: 1,
       diferenciaProfundidadBaldaVerticalHorizontal: 1,
     },

@@ -54,16 +54,6 @@ export class DespieceComponent implements OnInit {
     return `${baldaModulo.nombreModulo}-${letra}`;
   }
 
-  /** Texto descriptivo de paredes en esquinas */
-  textoParedes(): string {
-    const izq = this.estudio.caracteristicas.paredEsquinaIzquierda;
-    const der = this.estudio.caracteristicas.paredEsquinaDerecha;
-    if (izq && der) return 'Ambos lados';
-    if (izq) return 'Solo esquina izquierda';
-    if (der) return 'Solo esquina derecha';
-    return 'Ninguna';
-  }
-
   /** Formatea las dimensiones de una pieza como texto */
   formatoDimensiones(pieza: PiezaDespiece): string {
     return `${pieza.largo} × ${pieza.alto} × ${pieza.grosor} mm`;
@@ -124,6 +114,14 @@ export class DespieceComponent implements OnInit {
   /** Formatea las dimensiones de una pieza agregada */
   formatoDimensionesAgregada(pieza: PiezaDespieceAgregada): string {
     return `${pieza.largo} × ${pieza.alto} × ${pieza.grosor} mm`;
+  }
+
+  /** Formatea las dimensiones redondeadas a mm enteros. Las puertas no se redondean. */
+  formatoDimensionesRedondeadas(pieza: PiezaDespieceAgregada): string {
+    if (pieza.pieza === 'Puerta') {
+      return '—';
+    }
+    return `${Math.round(pieza.largo)} × ${Math.round(pieza.alto)} × ${Math.round(pieza.grosor)} mm`;
   }
 
   /** Descarga la tabla agregada como fichero Excel (.xlsx) */
