@@ -116,6 +116,14 @@ export class DespieceComponent implements OnInit {
     return `${pieza.largo} × ${pieza.alto} × ${pieza.grosor} mm`;
   }
 
+  /** Formatea las dimensiones redondeadas a mm enteros. Las puertas no se redondean. */
+  formatoDimensionesRedondeadas(pieza: PiezaDespieceAgregada): string {
+    if (pieza.pieza === 'Puerta') {
+      return '—';
+    }
+    return `${Math.round(pieza.largo)} × ${Math.round(pieza.alto)} × ${Math.round(pieza.grosor)} mm`;
+  }
+
   /** Descarga la tabla agregada como fichero Excel (.xlsx) */
   descargarExcel(): void {
     const datos = this.piezasAgregadas.map(p => ({
