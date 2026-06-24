@@ -126,13 +126,20 @@ export class DespieceComponent implements OnInit {
 
   /** Descarga la tabla agregada como fichero Excel (.xlsx) */
   descargarExcel(): void {
-    const datos = this.piezasAgregadas.map(p => ({
-      Pieza: p.pieza,
-      Unidades: p.unidades,
-      'Largo (mm)': p.largo,
-      'Alto (mm)': p.alto,
-      'Grosor (mm)': p.grosor,
-    }));
+    const datos = this.piezasAgregadas.map(p => {
+      const esPuerta = p.pieza.startsWith('Puerta');
+      const dimensiones_redondeadas = esPuerta
+        ? `${p.largo} x ${p.alto} x ${p.grosor} mm`
+        : `${Math.round(p.largo)} x ${Math.round(p.alto)} x ${Math.round(p.grosor)} mm`;
+      const dimensiones = `${p.largo} x ${p.alto} x ${p.grosor} mm`;
+
+      return {
+        Pieza: p.pieza,
+        Unidades: p.unidades,
+        Dimensiones: dimensiones,
+        DimensionesRedondeadas: dimensiones_redondeadas,
+      };
+    });
 
     const ws = XLSX.utils.json_to_sheet(datos);
     const wb = XLSX.utils.book_new();
