@@ -64,6 +64,10 @@ export class EstudioService {
     this.estudio = crearEstudioVacio();
   }
 
+  invalidarModulosDefinidos(): void {
+    this.estudio.definicionModulos.modulos = [];
+  }
+
   cargarEstudio(json: string): void {
     const data: EstudioExportado = JSON.parse(json);
     this.estudio = deEstudioExportado(data);
