@@ -40,7 +40,7 @@
       <select id="opcionModulo" (change)="seleccionarOpcion($any($event.target).selectedIndex - 1)">
         <option value="" disabled [selected]="!opcionSeleccionada">-- Elige una opción --</option>
         <option *ngFor="let opcion of opcionesModulos">
-          {{ opcion.modulos }} módulo{{ opcion.modulos > 1 ? 's' : '' }} con {{ opcion.puertas }} puertas — anchura puerta: {{ opcion.anchura_puerta }} mm
+          {{ opcion.modulos }} módulo{{ opcion.modulos > 1 ? 's' : '' }} con {{ opcion.puertas }} puertas{{ opcion.puertas === 3 ? (opcion.modulo_grande_izquierda ? ' (módulo ancho a la izquierda)' : ' (módulo ancho a la derecha)') : '' }} — anchura puerta: {{ opcion.anchura_puerta }} mm
         </option>
       </select>
       <small *ngIf="opcionSeleccionada" class="nota-formula nota-formula-block">

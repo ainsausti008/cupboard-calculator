@@ -47,6 +47,7 @@ class OpcionModulo(BaseModel):
     modulos: int
     puertas: int
     anchura_puerta: float
+    modulo_grande_izquierda: bool = False
 
 
 class OpcionesModulosResponse(BaseModel):
@@ -91,6 +92,7 @@ class ModulosDefinidosRequest(BaseModel):
     holgura_puerta_esquina: float
     holgura_puerta_contigua: float
     altura_modulo1: float | None = None
+    modulo_grande_izquierda: bool = False
 
 
 class ModuloDefinido(BaseModel):

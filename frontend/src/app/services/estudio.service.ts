@@ -14,6 +14,7 @@ export interface OpcionModulo {
   modulos: number;
   puertas: number;
   anchura_puerta: number;
+  modulo_grande_izquierda: boolean;
 }
 
 interface OpcionesModulosResponse {
@@ -147,6 +148,7 @@ export class EstudioService {
       anchura_puerta: opcion.anchura_puerta,
       holgura_puerta_esquina: this.estudio.constantes.holguraPuertaEsquina,
       holgura_puerta_contigua: this.estudio.constantes.holguraPuertaContigua,
+      modulo_grande_izquierda: opcion.modulo_grande_izquierda,
     };
     if (modulosVerticales === 2 && alturaModulo1 != null) {
       body['altura_modulo1'] = alturaModulo1;

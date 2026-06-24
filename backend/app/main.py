@@ -125,6 +125,7 @@ async def calcular_modulos_definidos_endpoint(
         holgura_puerta_esquina=datos.holgura_puerta_esquina,
         holgura_puerta_contigua=datos.holgura_puerta_contigua,
         altura_modulo1=datos.altura_modulo1,
+        modulo_grande_izquierda=datos.modulo_grande_izquierda,
     )
     return ModulosDefinidosResponse(modulos=modulos)
 

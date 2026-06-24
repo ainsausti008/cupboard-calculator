@@ -109,8 +109,19 @@ def calcular_opciones_modulos(
                     "modulos": modulos,
                     "puertas": puertas,
                     "anchura_puerta": round(anchura, 2),
+                    "modulo_grande_izquierda": False,
                 }
             )
+            # Para 3 puertas, también ofrecer la variante con el módulo ancho a la izquierda
+            if puertas == 3:
+                opciones.append(
+                    {
+                        "modulos": modulos,
+                        "puertas": puertas,
+                        "anchura_puerta": round(anchura, 2),
+                        "modulo_grande_izquierda": True,
+                    }
+                )
 
     return opciones
 
@@ -194,6 +205,7 @@ def calcular_modulos_definidos(
     holgura_puerta_esquina: float,
     holgura_puerta_contigua: float,
     altura_modulo1: float | None = None,
+    modulo_grande_izquierda: bool = False,
 ) -> list[dict]:
     """Genera la lista de módulos con nombre y dimensiones.
 
@@ -210,7 +222,8 @@ def calcular_modulos_definidos(
         anch_i, anch_d = _anchuras_modulos_3puertas(
             anchura_puerta, holgura_puerta_esquina, holgura_puerta_contigua
         )
-        anchuras_h = [anch_i, anch_d]
+        # Si modulo_grande_izquierda, el módulo grande va a la izquierda (posición 1)
+        anchuras_h = [anch_d, anch_i] if modulo_grande_izquierda else [anch_i, anch_d]
     else:  # 4 puertas
         anch_i, anch_d = _anchuras_modulos_4puertas(
             anchura_puerta, holgura_puerta_esquina, holgura_puerta_contigua
