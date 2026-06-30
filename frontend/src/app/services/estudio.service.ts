@@ -192,6 +192,13 @@ export class EstudioService {
       altura_estructura: this.estudio.dimensiones.altura_estructura,
       canteado: this.estudio.opcionesDespiece.canteado,
       remates: this.estudio.opcionesDespiece.remates,
+      anchura_estructura: this.estudio.dimensiones.anchura_estructura,
+      altura_espacio: this.estudio.dimensiones.altura,
+      profundidad_espacio: this.estudio.dimensiones.profundidad,
+      grosor_puerta: this.estudio.constantes.grosorPuerta,
+      pared_izquierda: this.estudio.caracteristicas.paredEsquinaIzquierda,
+      pared_derecha: this.estudio.caracteristicas.paredEsquinaDerecha,
+      distancia_suelo: this.estudio.constantes.distanciaSuelo,
     };
 
     return this.http

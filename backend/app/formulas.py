@@ -521,24 +521,133 @@ def calcular_pieza_puerta(
     anchura_puerta: float,
     altura_estructura: float,
     grosor_tabla: float,
+    distancia_suelo: float,
 ) -> dict:
     """Calcula las dimensiones de una puerta.
 
     La anchura de la puerta ya viene precalculada en la fase de definición
     de módulos. La altura se calcula a partir de la altura de la estructura
-    descontando medio grosor de tabla por arriba y por abajo.
+    descontando medio grosor de tabla por arriba y por abajo, y la
+    distancia al suelo.
 
     Dimensiones:
         anchura_puerta
-        × (altura_estructura − grosor_tabla / 2 − grosor_tabla / 2)
+        × (altura_estructura − grosor_tabla / 2 − grosor_tabla / 2 − distancia_suelo)
         × grosor_tabla
     """
-    altura_puerta = altura_estructura - grosor_tabla / 2 - grosor_tabla / 2
+    altura_puerta = (
+        altura_estructura - grosor_tabla / 2 - grosor_tabla / 2 - distancia_suelo
+    )
     return {
         "largo": round(anchura_puerta, 2),
         "alto": round(altura_puerta, 2),
         "grosor": round(grosor_tabla, 2),
     }
+
+
+# ---------------------------------------------------------------------------
+# Remates
+# ---------------------------------------------------------------------------
+
+GROSOR_REMATE = 19  # mm — todos los remates tienen el mismo grosor
+
+
+def calcular_remates(
+    anchura_estructura: float,
+    altura_estructura: float,
+    altura_espacio: float,
+    profundidad_espacio: float,
+    grosor_puerta: float,
+    pared_izquierda: bool,
+    pared_derecha: bool,
+) -> list[dict]:
+    """Genera las piezas de remate del armario.
+
+    Todos los remates tienen un grosor de ``GROSOR_REMATE`` (19 mm) y no
+    llevan canto.
+
+    Tipos de remate
+    ---------------
+    - Costado visto: solo existe en los costados SIN pared (el borde queda
+      a la vista). Por cada costado sin pared se genera uno.
+        altura = altura_espacio − 3
+        fondo  = profundidad_espacio − grosor_puerta
+    - Remate inferior y superior: tapan los huecos arriba y abajo.
+        altura  = 100
+        anchura = anchura_estructura + 100
+    - Remate de esquina: solo existe en los costados CON pared. Por cada
+      costado con pared se genera uno.
+        anchura = 60
+        altura  = altura_estructura + 100
+
+    Devuelve
+    --------
+    list[dict]
+        Lista de piezas con: pieza, unidades, largo, alto, grosor, modulo,
+        calculo, canteado.
+    """
+
+    def _f(n: float) -> str:
+        return f"{n:g}"
+
+    piezas: list[dict] = []
+
+    # --- Costado visto (costados sin pared) ---
+    costados_vistos = (0 if pared_izquierda else 1) + (0 if pared_derecha else 1)
+    if costados_vistos > 0:
+        altura_cv = altura_espacio - 3
+        fondo_cv = profundidad_espacio - grosor_puerta
+        piezas.append(
+            {
+                "pieza": "Costado visto",
+                "unidades": costados_vistos,
+                "largo": round(altura_cv, 2),
+                "alto": round(fondo_cv, 2),
+                "grosor": round(GROSOR_REMATE, 2),
+                "modulo": "—",
+                "calculo": (
+                    f"({_f(altura_espacio)} − 3,"
+                    f" {_f(profundidad_espacio)} − {_f(grosor_puerta)},"
+                    f" {_f(GROSOR_REMATE)})"
+                ),
+                "canteado": [],
+            }
+        )
+
+    # --- Remates inferior y superior ---
+    anchura_remate = anchura_estructura + 100
+    for nombre_remate in ("Remate inferior", "Remate superior"):
+        piezas.append(
+            {
+                "pieza": nombre_remate,
+                "unidades": 1,
+                "largo": round(anchura_remate, 2),
+                "alto": round(100, 2),
+                "grosor": round(GROSOR_REMATE, 2),
+                "modulo": "—",
+                "calculo": f"({_f(anchura_estructura)} + 100, 100, {_f(GROSOR_REMATE)})",
+                "canteado": [],
+            }
+        )
+
+    # --- Remate de esquina (costados con pared) ---
+    esquinas = (1 if pared_izquierda else 0) + (1 if pared_derecha else 0)
+    if esquinas > 0:
+        altura_esquina = altura_estructura + 100
+        piezas.append(
+            {
+                "pieza": "Remate esquina",
+                "unidades": esquinas,
+                "largo": round(altura_esquina, 2),
+                "alto": round(60, 2),
+                "grosor": round(GROSOR_REMATE, 2),
+                "modulo": "—",
+                "calculo": f"({_f(altura_estructura)} + 100, 60, {_f(GROSOR_REMATE)})",
+                "canteado": [],
+            }
+        )
+
+    return piezas
 
 
 def calcular_despiece(
@@ -552,6 +661,14 @@ def calcular_despiece(
     anchura_puerta: float,
     altura_estructura: float,
     canteado: bool = True,
+    remates: bool = False,
+    anchura_estructura: float = 0,
+    altura_espacio: float = 0,
+    profundidad_espacio: float = 0,
+    grosor_puerta: float = 0,
+    pared_izquierda: bool = False,
+    pared_derecha: bool = False,
+    distancia_suelo: float = 0,
 ) -> list[dict]:
     """Genera la lista completa de piezas (despiece) del armario.
 
@@ -585,6 +702,23 @@ def calcular_despiece(
     canteado : bool
         Si es ``True``, cada pieza incluye en ``canteado`` las dimensiones
         con canto. Si es ``False``, ninguna pieza lleva canto.
+    remates : bool
+        Si es ``True``, se añaden las piezas de remate (costado visto,
+        remate inferior/superior y remate de esquina).
+    anchura_estructura : float
+        Anchura total de la estructura (mm). Necesaria para los remates.
+    altura_espacio : float
+        Altura del hueco (mm). Necesaria para el costado visto.
+    profundidad_espacio : float
+        Profundidad total del hueco (mm). Necesaria para el costado visto.
+    grosor_puerta : float
+        Grosor de la puerta (mm). Necesario para el costado visto.
+    pared_izquierda : bool
+        Indica si hay pared en el costado izquierdo.
+    pared_derecha : bool
+        Indica si hay pared en el costado derecho.
+    distancia_suelo : float
+        Distancia al suelo (mm). Se descuenta de la altura de la puerta.
 
     Devuelve
     --------
@@ -826,11 +960,14 @@ def calcular_despiece(
 
     # --- Puertas ---
     if puertas > 0:
-        dims_p = calcular_pieza_puerta(anchura_puerta, altura_estructura, grosor_tabla)
-        # Cálculo: largo = anchura_puerta, alto = alt_estr − grosor/2 − grosor/2, grosor
+        dims_p = calcular_pieza_puerta(
+            anchura_puerta, altura_estructura, grosor_tabla, distancia_suelo
+        )
+        # Cálculo: largo = anchura_puerta, alto = alt_estr − grosor/2 − grosor/2 − dist_suelo, grosor
         c_largo = _f(anchura_puerta)
         c_alto = (
             f"{_f(altura_estructura)} − {_f(grosor_tabla)}/2 − {_f(grosor_tabla)}/2"
+            f" − {_f(distancia_suelo)}"
         )
         c_grosor = _f(grosor_tabla)
         piezas.append(
@@ -842,6 +979,20 @@ def calcular_despiece(
                 "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
                 "canteado": _canteado("Puerta"),
             }
+        )
+
+    # --- Remates ---
+    if remates:
+        piezas.extend(
+            calcular_remates(
+                anchura_estructura=anchura_estructura,
+                altura_estructura=altura_estructura,
+                altura_espacio=altura_espacio,
+                profundidad_espacio=profundidad_espacio,
+                grosor_puerta=grosor_puerta,
+                pared_izquierda=pared_izquierda,
+                pared_derecha=pared_derecha,
+            )
         )
 
     return piezas

@@ -153,6 +153,14 @@ class DespieceRequest(BaseModel):
     altura_estructura: float
     canteado: bool = True
     remates: bool = True
+    # Datos necesarios para el cálculo de remates
+    anchura_estructura: float = 0
+    altura_espacio: float = 0
+    profundidad_espacio: float = 0
+    grosor_puerta: float = 0
+    pared_izquierda: bool = False
+    pared_derecha: bool = False
+    distancia_suelo: float = 0
 
 
 class PiezaDespiece(BaseModel):
