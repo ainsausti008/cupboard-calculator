@@ -352,7 +352,70 @@
   font-size: 0.88rem;
   color: #34495e;
   letter-spacing: 0.02em;
+
+  .dim-canteada {
+    text-decoration: underline;
+    text-decoration-color: #e67e22;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    font-weight: 700;
+    color: #2c3e50;
+  }
+
+  .dim-canteada--doble {
+    text-decoration-style: double;
+    text-underline-offset: 2px;
+  }
 }
+
+/* --- Opciones de despiece --- */
+
+.seccion-opciones {
+  .seccion-body {
+    gap: 0.75rem;
+  }
+}
+
+.opcion-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+
+  input[type='checkbox'] {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.15rem;
+    accent-color: #27ae60;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}
+
+.opcion-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.opcion-nombre {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.92rem;
+}
+
+.opcion-desc {
+  color: #7f8c8d;
+  font-size: 0.82rem;
+}
+
 
 .celda-calculo {
   font-family: 'Consolas', 'Courier New', monospace;

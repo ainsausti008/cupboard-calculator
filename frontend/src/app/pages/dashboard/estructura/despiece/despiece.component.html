@@ -150,6 +150,29 @@
       </div>
     </div>
 
+    <!-- ─── Opciones de despiece ─── -->
+    <div class="seccion-card seccion-opciones">
+      <div class="seccion-header">
+        <h4>Opciones de despiece</h4>
+      </div>
+      <div class="seccion-body">
+        <label class="opcion-toggle">
+          <input type="checkbox" [(ngModel)]="estudio.opcionesDespiece.canteado" />
+          <span class="opcion-texto">
+            <span class="opcion-nombre">Canteado</span>
+            <span class="opcion-desc">Subraya las dimensiones con canto en las piezas expuestas.</span>
+          </span>
+        </label>
+        <label class="opcion-toggle">
+          <input type="checkbox" [(ngModel)]="estudio.opcionesDespiece.remates" />
+          <span class="opcion-texto">
+            <span class="opcion-nombre">Añadir remates</span>
+            <span class="opcion-desc">Incluye los remates en el despiece.</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
     <!-- ─── Botón de cálculo ─── -->
     <div class="accion-despiece">
       <button
@@ -184,7 +207,11 @@
             <tr *ngFor="let pieza of piezas">
               <td class="celda-pieza">{{ pieza.pieza }}</td>
               <td class="celda-unidades">{{ pieza.unidades }}</td>
-              <td class="celda-dimensiones">{{ formatoDimensiones(pieza) }}</td>
+              <td class="celda-dimensiones">
+                <ng-container *ngFor="let parte of partesDimensiones(pieza); let i = index">
+                  <span [class.dim-canteada]="parte.canteado" [class.dim-canteada--doble]="parte.doble">{{ parte.valor }}</span><span *ngIf="i < 2"> × </span>
+                </ng-container> mm
+              </td>
               <td class="celda-calculo">{{ pieza.calculo }}</td>
               <td class="celda-modulo">{{ pieza.modulo }}</td>
             </tr>
@@ -212,8 +239,19 @@
             <tr *ngFor="let pieza of piezasAgregadas">
               <td class="celda-pieza">{{ pieza.pieza }}</td>
               <td class="celda-unidades">{{ pieza.unidades }}</td>
-              <td class="celda-dimensiones">{{ formatoDimensionesAgregada(pieza) }}</td>
-              <td class="celda-dimensiones">{{ formatoDimensionesRedondeadas(pieza) }}</td>
+              <td class="celda-dimensiones">
+                <ng-container *ngFor="let parte of partesDimensiones(pieza); let i = index">
+                  <span [class.dim-canteada]="parte.canteado" [class.dim-canteada--doble]="parte.doble">{{ parte.valor }}</span><span *ngIf="i < 2"> × </span>
+                </ng-container> mm
+              </td>
+              <td class="celda-dimensiones">
+                <ng-container *ngIf="pieza.pieza.startsWith('Puerta'); else redondeadas">—</ng-container>
+                <ng-template #redondeadas>
+                  <ng-container *ngFor="let parte of partesDimensionesRedondeadas(pieza); let i = index">
+                    <span [class.dim-canteada]="parte.canteado" [class.dim-canteada--doble]="parte.doble">{{ parte.valor }}</span><span *ngIf="i < 2"> × </span>
+                  </ng-container> mm
+                </ng-template>
+              </td>
             </tr>
           </tbody>
         </table>
