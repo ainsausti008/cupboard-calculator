@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EstudioData, BaldaModulo, ModuloEstudio } from '../../../../models/estudio.model';
 import { EstudioService, PiezaDespiece } from '../../../../services/estudio.service';
-import * as ExcelJS from 'exceljs';
+import type * as ExcelJS from 'exceljs';
 
 export interface PiezaDespieceAgregada {
   pieza: string;
@@ -142,7 +142,12 @@ export class DespieceComponent implements OnInit {
 
   /** Descarga la tabla agregada como fichero Excel (.xlsx) con subrayado de canteado */
   async descargarExcel(): Promise<void> {
-    const workbook = new ExcelJS.Workbook();
+    // Carga diferida de exceljs: solo se descarga al pulsar el botón,
+    // evitando que entre en el bundle inicial.
+    const ExcelJSModule = await import('exceljs');
+    const ExcelJSLib = (ExcelJSModule as unknown as { default?: typeof ExcelJS }).default ?? ExcelJSModule;
+
+    const workbook = new ExcelJSLib.Workbook();
     const sheet = workbook.addWorksheet('Despiece agregado');
 
     sheet.columns = [

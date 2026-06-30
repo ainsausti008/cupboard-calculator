@@ -6,12 +6,18 @@
     "configurations": [
         
         {
-            "name": "activar backend",
+            "name": "activar backend (uvicorn)",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/run_api.py",
+            "module": "uvicorn",
+            "args": [
+                "backend.app.main:app",
+                "--reload",
+                "--port",
+                "8000"
+            ],
             "console": "integratedTerminal",
-            "justMyCode": false,
+            "justMyCode": false
         }
 
     ]
