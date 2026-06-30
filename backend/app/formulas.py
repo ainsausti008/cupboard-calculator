@@ -268,6 +268,38 @@ def calcular_modulos_definidos(
 # Despiece — cálculo de piezas
 # ---------------------------------------------------------------------------
 
+# Canteado: dimensiones de cada pieza que llevan canto.
+#
+# El canteado se aplica únicamente a los bordes que quedan expuestos a las
+# personas (los que se pueden tocar). Para cada tipo de pieza se indica qué
+# dimensión (``largo`` y/o ``alto``) lleva canto:
+#
+# - Puerta: las dos anchuras y las dos alturas -> ``largo`` y ``alto``.
+# - Base y Techo: una anchura -> ``largo``.
+# - Baldas (vertical y horizontal): una anchura (el borde frontal) -> ``largo``.
+# - Costados y Traseras: no llevan canto.
+CANTEADO_POR_PIEZA: dict[str, list[str]] = {
+    "Trasera": [],
+    "Costado": [],
+    "Base": ["largo"],
+    "Techo": ["largo"],
+    "Balda vertical": ["largo"],
+    "Balda horizontal": ["largo"],
+    "Puerta": ["largo", "alto"],
+}
+
+
+def canteado_pieza(tipo_pieza: str) -> list[str]:
+    """Devuelve las dimensiones con canto para un tipo de pieza.
+
+    El tipo se normaliza para soportar nombres con sufijos
+    (p. ej. ``"Balda horizontal (secc. a)"``).
+    """
+    for clave, dimensiones in CANTEADO_POR_PIEZA.items():
+        if tipo_pieza.startswith(clave):
+            return list(dimensiones)
+    return []
+
 
 def calcular_pieza_trasera(
     anchura_modulo: float,
@@ -519,6 +551,7 @@ def calcular_despiece(
     puertas: int,
     anchura_puerta: float,
     altura_estructura: float,
+    canteado: bool = True,
 ) -> list[dict]:
     """Genera la lista completa de piezas (despiece) del armario.
 
@@ -549,16 +582,24 @@ def calcular_despiece(
         Anchura de cada puerta (mm).
     altura_estructura : float
         Altura total de la estructura (mm).
+    canteado : bool
+        Si es ``True``, cada pieza incluye en ``canteado`` las dimensiones
+        con canto. Si es ``False``, ninguna pieza lleva canto.
 
     Devuelve
     --------
     list[dict]
-        Lista de piezas con: pieza, unidades, largo, alto, grosor, modulo, calculo.
+        Lista de piezas con: pieza, unidades, largo, alto, grosor, modulo,
+        calculo, canteado.
     """
 
     def _f(n: float) -> str:
         """Formatea un número sin decimales innecesarios."""
         return f"{n:g}"
+
+    def _canteado(tipo_pieza: str) -> list[str]:
+        """Dimensiones con canto de la pieza, o vacío si el canteado está desactivado."""
+        return canteado_pieza(tipo_pieza) if canteado else []
 
     piezas: list[dict] = []
     nombres_modulos = {m["nombre"] for m in modulos}
@@ -595,6 +636,7 @@ def calcular_despiece(
                 **dims,
                 "modulo": nombre,
                 "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
+                "canteado": _canteado("Trasera"),
             }
         )
 
@@ -616,6 +658,7 @@ def calcular_despiece(
                 **dims,
                 "modulo": nombre,
                 "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
+                "canteado": _canteado("Costado"),
             }
         )
 
@@ -641,6 +684,7 @@ def calcular_despiece(
                 **dims_base_inferior,
                 "modulo": nombre,
                 "calculo": calculo_base_inferior,
+                "canteado": _canteado("Base"),
             }
         )
 
@@ -664,6 +708,7 @@ def calcular_despiece(
                 **dims_base_superior,
                 "modulo": nombre,
                 "calculo": calculo_base_superior,
+                "canteado": _canteado("Techo"),
             }
         )
 
@@ -694,6 +739,7 @@ def calcular_despiece(
                     **dims_bv,
                     "modulo": nombre,
                     "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
+                    "canteado": _canteado("Balda vertical"),
                 }
             )
 
@@ -723,6 +769,7 @@ def calcular_despiece(
                         **dims_bh,
                         "modulo": nombre,
                         "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
+                        "canteado": _canteado("Balda horizontal"),
                     }
                 )
         else:
@@ -773,6 +820,7 @@ def calcular_despiece(
                         **dims_bh,
                         "modulo": nombre_seccion,
                         "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
+                        "canteado": _canteado("Balda horizontal"),
                     }
                 )
 
@@ -792,6 +840,7 @@ def calcular_despiece(
                 **dims_p,
                 "modulo": "—",
                 "calculo": f"({c_largo}, {c_alto}, {c_grosor})",
+                "canteado": _canteado("Puerta"),
             }
         )
 

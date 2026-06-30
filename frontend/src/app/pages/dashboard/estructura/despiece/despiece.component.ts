@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EstudioData, BaldaModulo, ModuloEstudio } from '../../../../models/estudio.model';
 import { EstudioService, PiezaDespiece } from '../../../../services/estudio.service';
-import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
 
 export interface PiezaDespieceAgregada {
   pieza: string;
@@ -9,6 +9,16 @@ export interface PiezaDespieceAgregada {
   largo: number;
   alto: number;
   grosor: number;
+  canteado: string[];
+}
+
+/** Una dimensión individual de una pieza, con indicación de si lleva canto */
+export interface ParteDimension {
+  valor: number | string;
+  /** Lleva canto en al menos un borde */
+  canteado: boolean;
+  /** Lleva canto en los dos bordes (subrayado doble, e.g. puerta) */
+  doble: boolean;
 }
 
 @Component({
@@ -54,9 +64,27 @@ export class DespieceComponent implements OnInit {
     return `${baldaModulo.nombreModulo}-${letra}`;
   }
 
-  /** Formatea las dimensiones de una pieza como texto */
-  formatoDimensiones(pieza: PiezaDespiece): string {
-    return `${pieza.largo} × ${pieza.alto} × ${pieza.grosor} mm`;
+  /** Devuelve las tres dimensiones de una pieza con su marca de canteado.
+   * Cuando tanto largo como alto llevan canto (p. ej. puerta), ambos se
+   * marcan como dobles (subrayado doble).
+   */
+  partesDimensiones(pieza: PiezaDespiece | PiezaDespieceAgregada): ParteDimension[] {
+    const esDoble = pieza.canteado.includes('largo') && pieza.canteado.includes('alto');
+    return [
+      { valor: pieza.largo,  canteado: pieza.canteado.includes('largo'),  doble: esDoble },
+      { valor: pieza.alto,   canteado: pieza.canteado.includes('alto'),   doble: esDoble },
+      { valor: pieza.grosor, canteado: pieza.canteado.includes('grosor'), doble: false },
+    ];
+  }
+
+  /** Dimensiones redondeadas (mm enteros) de una pieza agregada con su marca de canteado. */
+  partesDimensionesRedondeadas(pieza: PiezaDespieceAgregada): ParteDimension[] {
+    const esDoble = pieza.canteado.includes('largo') && pieza.canteado.includes('alto');
+    return [
+      { valor: Math.round(pieza.largo),  canteado: pieza.canteado.includes('largo'),  doble: esDoble },
+      { valor: Math.round(pieza.alto),   canteado: pieza.canteado.includes('alto'),   doble: esDoble },
+      { valor: Math.round(pieza.grosor), canteado: pieza.canteado.includes('grosor'), doble: false },
+    ];
   }
 
   /** Lanza el cálculo del despiece contra el backend */
@@ -88,7 +116,7 @@ export class DespieceComponent implements OnInit {
     const mapa = new Map<string, PiezaDespieceAgregada>();
 
     for (const p of piezas) {
-      const clave = `${p.largo}|${p.alto}|${p.grosor}`;
+      const clave = `${p.largo}|${p.alto}|${p.grosor}|${[...p.canteado].sort().join(',')}`;
       const nombreCompleto = p.modulo && p.modulo !== '—'
         ? `${p.pieza} (${p.modulo})`
         : p.pieza;
@@ -104,6 +132,7 @@ export class DespieceComponent implements OnInit {
           largo: p.largo,
           alto: p.alto,
           grosor: p.grosor,
+          canteado: [...p.canteado],
         });
       }
     }
@@ -111,39 +140,58 @@ export class DespieceComponent implements OnInit {
     return Array.from(mapa.values());
   }
 
-  /** Formatea las dimensiones de una pieza agregada */
-  formatoDimensionesAgregada(pieza: PiezaDespieceAgregada): string {
-    return `${pieza.largo} × ${pieza.alto} × ${pieza.grosor} mm`;
-  }
+  /** Descarga la tabla agregada como fichero Excel (.xlsx) con subrayado de canteado */
+  async descargarExcel(): Promise<void> {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Despiece agregado');
 
-  /** Formatea las dimensiones redondeadas a mm enteros. Las puertas no se redondean. */
-  formatoDimensionesRedondeadas(pieza: PiezaDespieceAgregada): string {
-    if (pieza.pieza === 'Puerta') {
-      return '—';
-    }
-    return `${Math.round(pieza.largo)} × ${Math.round(pieza.alto)} × ${Math.round(pieza.grosor)} mm`;
-  }
+    sheet.columns = [
+      { header: 'Pieza',                   key: 'pieza',   width: 42 },
+      { header: 'Unidades',                key: 'uds',     width: 10 },
+      { header: 'Dimensiones',             key: 'dims',    width: 26 },
+      { header: 'Dimensiones redondeadas', key: 'dimsRed', width: 26 },
+    ];
 
-  /** Descarga la tabla agregada como fichero Excel (.xlsx) */
-  descargarExcel(): void {
-    const datos = this.piezasAgregadas.map(p => {
+    // Cabecera en negrita
+    const headerRow = sheet.getRow(1);
+    headerRow.font = { bold: true };
+    headerRow.alignment = { vertical: 'middle' };
+
+    for (const p of this.piezasAgregadas) {
       const esPuerta = p.pieza.startsWith('Puerta');
-      const dimensiones_redondeadas = esPuerta
-        ? `${p.largo} x ${p.alto} x ${p.grosor} mm`
-        : `${Math.round(p.largo)} x ${Math.round(p.alto)} x ${Math.round(p.grosor)} mm`;
-      const dimensiones = `${p.largo} x ${p.alto} x ${p.grosor} mm`;
+      const partes     = this.partesDimensiones(p);
+      const partesRed  = this.partesDimensionesRedondeadas(p);
 
-      return {
-        Pieza: p.pieza,
-        Unidades: p.unidades,
-        Dimensiones: dimensiones,
-        DimensionesRedondeadas: dimensiones_redondeadas,
-      };
-    });
+      const row = sheet.addRow({ pieza: p.pieza, uds: p.unidades });
 
-    const ws = XLSX.utils.json_to_sheet(datos);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Despiece agregado');
-    XLSX.writeFile(wb, 'despiece_agregado.xlsx');
+      const buildRichText = (ps: ParteDimension[]): ExcelJS.CellRichTextValue => ({
+        richText: ps.flatMap((parte, i) => {
+          const underline: ExcelJS.Font['underline'] =
+            parte.doble ? 'double' : parte.canteado ? true : false;
+          const segmento: ExcelJS.RichText = {
+            text: String(parte.valor),
+            font: underline ? { underline } : {},
+          };
+          return i < 2 ? [segmento, { text: ' × ' }] : [segmento];
+        }).concat({ text: ' mm' }),
+      });
+
+      row.getCell('dims').value = buildRichText(partes);
+      row.getCell('dimsRed').value = esPuerta
+        ? { richText: [{ text: '—' }] }
+        : buildRichText(partesRed);
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob(
+      [buffer],
+      { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'despiece_agregado.xlsx';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 }

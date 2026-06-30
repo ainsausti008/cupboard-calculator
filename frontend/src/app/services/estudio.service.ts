@@ -45,6 +45,7 @@ export interface PiezaDespiece {
   grosor: number;
   modulo: string;
   calculo: string;
+  canteado: string[];
 }
 
 interface DespieceResponse {
@@ -189,6 +190,8 @@ export class EstudioService {
       puertas: this.estudio.definicionModulos.puertas,
       anchura_puerta: this.estudio.definicionModulos.anchuraPuerta,
       altura_estructura: this.estudio.dimensiones.altura_estructura,
+      canteado: this.estudio.opcionesDespiece.canteado,
+      remates: this.estudio.opcionesDespiece.remates,
     };
 
     return this.http

@@ -151,6 +151,8 @@ class DespieceRequest(BaseModel):
     puertas: int
     anchura_puerta: float
     altura_estructura: float
+    canteado: bool = True
+    remates: bool = True
 
 
 class PiezaDespiece(BaseModel):
@@ -163,6 +165,7 @@ class PiezaDespiece(BaseModel):
     grosor: float
     modulo: str
     calculo: str
+    canteado: list[str] = []
 
 
 class DespieceResponse(BaseModel):

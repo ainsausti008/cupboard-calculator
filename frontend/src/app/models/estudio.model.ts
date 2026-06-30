@@ -21,6 +21,13 @@ export interface BaldaModulo {
   submodulos: SubmoduloBalda[];
 }
 
+export interface OpcionesDespiece {
+  /** Aplicar canteado a los bordes expuestos de las piezas */
+  canteado: boolean;
+  /** Añadir remates al despiece */
+  remates: boolean;
+}
+
 export interface EstudioData {
   titulo: string;
   descripcion: string;
@@ -71,6 +78,8 @@ export interface EstudioData {
     modulos: ModuloEstudio[];
   };
   definicionBaldas: BaldaModulo[];
+  /** Opciones de configuración del despiece */
+  opcionesDespiece: OpcionesDespiece;
 }
 
 /** Estructura del JSON exportado/importado */
@@ -89,6 +98,7 @@ export interface EstudioExportado {
   constantes: EstudioData['constantes'];
   definicionModulos: EstudioData['definicionModulos'];
   definicionBaldas: BaldaModulo[];
+  opcionesDespiece?: OpcionesDespiece;
 }
 
 export function crearEstudioVacio(): EstudioData {
@@ -135,6 +145,10 @@ export function crearEstudioVacio(): EstudioData {
       modulos: [],
     },
     definicionBaldas: [],
+    opcionesDespiece: {
+      canteado: true,
+      remates: true,
+    },
   };
 }
 
@@ -155,6 +169,7 @@ export function aEstudioExportado(data: EstudioData): EstudioExportado {
     constantes: { ...data.constantes },
     definicionModulos: { ...data.definicionModulos },
     definicionBaldas: data.definicionBaldas.map(b => ({ ...b, submodulos: b.submodulos.map(s => ({ ...s })) })),
+    opcionesDespiece: { ...data.opcionesDespiece },
   };
 }
 
@@ -179,5 +194,6 @@ export function deEstudioExportado(json: EstudioExportado): EstudioData {
     constantes: { ...json.constantes },
     definicionModulos: { ...json.definicionModulos },
     definicionBaldas: (json.definicionBaldas || []).map(b => ({ ...b, submodulos: b.submodulos.map(s => ({ ...s })) })),
+    opcionesDespiece: { ...base.opcionesDespiece, ...(json.opcionesDespiece || {}) },
   };
 }
